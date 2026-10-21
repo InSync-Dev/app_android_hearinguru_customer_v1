@@ -65,6 +65,14 @@ fun TinnitusScreen() {
    fun pickSound(index: Int) = startOrRestart(index, volume)
 
 
+   // Stop the sound when the user leaves this screen (back or switching tabs)
+   DisposableEffect(Unit) {
+      onDispose {
+         if (AudioService.tinnitusPlaying.value) stop()
+      }
+   }
+
+
    // Restart when volume changes while already playing
    LaunchedEffect(volume) {
       if (isPlaying) startOrRestart(selectedSound, volume)
