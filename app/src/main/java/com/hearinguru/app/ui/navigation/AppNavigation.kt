@@ -141,16 +141,9 @@ fun AppNavigation(isDark: Boolean, onToggleTheme: () -> Unit) {
                 )
             }
             composable(Screen.HearingTest.route) {
-                HearingTestScreen(onStartTest = { navController.navigate(Screen.TestActive.route) })
-            }
-            composable(Screen.TestActive.route) {
-                TestActiveScreen(onResult = { navController.navigate(Screen.TestResult.route) })
-            }
-            composable(Screen.TestResult.route) {
-                TestResultScreen(
-                    onBookConsult = { navController.navigate(Screen.SeeADoctor.route) },
-                    onBrowseHAs   = { navController.navigate(Screen.HearingAids.route) },
-                    onRetake      = { navController.navigate(Screen.HearingTest.route) }
+                HearingTestScreen(
+                    onNavigateToDoctor      = { navController.navigate(Screen.SeeADoctor.route) },
+                    onNavigateToHearingAids = { navController.navigate(Screen.HearingAids.route) }
                 )
             }
             composable(Screen.SoundAmplifier.route) { SoundAmplifierScreen() }
