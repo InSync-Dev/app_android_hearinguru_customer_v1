@@ -1,9 +1,19 @@
 package com.hearinguru.app.ui.screens
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import com.hearinguru.app.data.UserProfileStore
 import android.media.AudioFormat
 import android.media.AudioManager
+import android.media.AudioRecord
 import android.media.AudioTrack
+import android.media.MediaRecorder
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,8 +42,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.PathEffect
 import kotlin.math.PI
+import kotlin.math.log10
 import kotlin.math.sin
+import kotlin.math.sqrt
 
 
 // ─── Data models ─────────────────────────────────────────────────────────────
@@ -53,6 +70,8 @@ private enum class TestStep {
     TEST_ACTIVE, RESULT
 }
 
+private enum class CheckStatus { PENDING, PASSED, FAILED, SKIPPED, UNAVAILABLE }
+
 private data class SessionState(
 
     val step: TestStep = TestStep.INTRO,
@@ -71,9 +90,11 @@ private data class SessionState(
     val hasTinnitus: Boolean = false,
     val hasNoiseExposure: Boolean = false,
 
-    // Environment
-    val headphoneConfirmed: Boolean = false,
-    val quietRoomConfirmed: Boolean = false,
+    // Environment checks
+    val headphoneCheckStatus: CheckStatus = CheckStatus.PENDING,
+    val noiseCheckStatus: CheckStatus = CheckStatus.PENDING,
+    val measuredAmbientDb: Float? = null,
+    val checksSkipped: Boolean = false,
 
     // Practice
     val practiceCompleted: Boolean = false,
@@ -90,10 +111,11 @@ private data class SessionState(
     val rightMissed: Int = 0
 )
 
-// Screening protocol: 1000, 2000, 4000 Hz each ear
+// Screening protocol: 1000, 2000, 3000, 4000, 8000 Hz each ear
+// 3000 Hz catches early noise-induced notch; 8000 Hz catches presbycusis
 private val TEST_TONES = listOf(
-    Pair("LEFT",  1000), Pair("LEFT",  2000), Pair("LEFT",  4000),
-    Pair("RIGHT", 1000), Pair("RIGHT", 2000), Pair("RIGHT", 4000)
+    Pair("LEFT",  1000), Pair("LEFT",  2000), Pair("LEFT",  3000), Pair("LEFT",  4000), Pair("LEFT",  8000),
+    Pair("RIGHT", 1000), Pair("RIGHT", 2000), Pair("RIGHT", 3000), Pair("RIGHT", 4000), Pair("RIGHT", 8000)
 )
 
 private const val TONE_DURATION_MS      = 2000
@@ -138,8 +160,26 @@ fun HearingTestScreen(
     onNavigateToDoctor: () -> Unit = {},
     onNavigateToHearingAids: () -> Unit = {}
 ) {
-    var session by remember { mutableStateOf(SessionState()) }
+    val context = LocalContext.current
     val scope   = rememberCoroutineScope()
+
+    // Load persisted consent + age group — skip ConsentStep if already saved
+    val savedAgeGroup    = remember { UserProfileStore.getAgeGroup(context) }
+    val isAlreadyConsented = remember { UserProfileStore.isConsented(context) }
+
+    var session by remember {
+        mutableStateOf(
+            if (isAlreadyConsented) {
+                SessionState(
+                    consentGiven = true,
+                    ageGroup     = savedAgeGroup,
+                    step         = TestStep.HISTORY
+                )
+            } else {
+                SessionState()
+            }
+        )
+    }
 
     AnimatedContent(targetState = session.step, label = "step") { step ->
         when (step) {
@@ -151,7 +191,11 @@ fun HearingTestScreen(
             TestStep.CONSENT -> ConsentStep(
                 session  = session,
                 onChange = { session = it },
-                onNext   = { session = session.copy(step = TestStep.HISTORY) },
+                onNext   = {
+                    // Persist so future test runs skip this step
+                    UserProfileStore.saveConsent(context, session.ageGroup)
+                    session = session.copy(step = TestStep.HISTORY)
+                },
                 onBack   = { session = session.copy(step = TestStep.INTRO) }
             )
             TestStep.HISTORY -> HistoryStep(
@@ -450,48 +494,76 @@ private fun HistoryStep(
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
+    var showOptional by remember { mutableStateOf(false) }
+
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp)) {
-        StepHeader(step = 2, total = 5, title = "Hearing History")
+        StepHeader(step = 2, total = 5, title = "Safety Check")
         Spacer(Modifier.height(8.dp))
         Text(
-            "These questions help identify any symptoms that need urgent medical attention before proceeding.",
+            "Two quick safety questions before we start. Answer carefully — your answers may change the recommended path.",
             style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 20.sp
         )
         Spacer(Modifier.height(16.dp))
 
-        // Urgent symptoms section
+        // Urgent — sudden loss
         Surface(shape = RoundedCornerShape(12.dp), color = MaterialTheme.colorScheme.errorContainer) {
-            Column(Modifier.padding(14.dp)) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Warning, null, tint = MaterialTheme.colorScheme.onErrorContainer, modifier = Modifier.size(18.dp))
-                    Text("Urgent symptoms — answer carefully", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onErrorContainer, fontWeight = FontWeight.Bold)
-                }
+            Row(Modifier.padding(12.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.Warning, null, tint = MaterialTheme.colorScheme.onErrorContainer, modifier = Modifier.size(16.dp))
+                Text("Answer carefully", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onErrorContainer, fontWeight = FontWeight.Bold)
             }
         }
         Spacer(Modifier.height(10.dp))
         YesNoQuestion(
-            question   = "Did your hearing loss start suddenly in the last 72 hours (sudden sensorineural hearing loss)?",
-            value      = session.hasSuddenLoss,
-            onChange   = { onChange(session.copy(hasSuddenLoss = it)) },
-            isUrgent   = true
+            question = "Did your hearing loss start suddenly in the last 72 hours?",
+            value    = session.hasSuddenLoss,
+            onChange = { onChange(session.copy(hasSuddenLoss = it)) },
+            isUrgent = true
         )
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(12.dp))
+        YesNoQuestion(
+            question = "Do you currently have significant ear pain, discharge, or severe dizziness?",
+            value    = session.hasEarPain || session.hasSignificantDizziness,
+            onChange = { v -> onChange(session.copy(hasEarPain = v, hasSignificantDizziness = v)) },
+            isUrgent = false
+        )
 
-        Text("OTHER SYMPTOMS", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, letterSpacing = 0.8.sp)
-        Spacer(Modifier.height(10.dp))
-        YesNoQuestion("Do you have significant ear pain or discharge from either ear?",       session.hasEarPain,               { onChange(session.copy(hasEarPain               = it)) })
-        Spacer(Modifier.height(10.dp))
-        YesNoQuestion("Are you experiencing significant dizziness or balance problems?",      session.hasSignificantDizziness,  { onChange(session.copy(hasSignificantDizziness  = it)) })
-        Spacer(Modifier.height(10.dp))
-        YesNoQuestion("Do you hear ringing, buzzing or other sounds in your ears (tinnitus)?",session.hasTinnitus,              { onChange(session.copy(hasTinnitus              = it)) })
-        Spacer(Modifier.height(10.dp))
-        YesNoQuestion("Have you been exposed to loud noise at work or regularly in daily life?",session.hasNoiseExposure,        { onChange(session.copy(hasNoiseExposure         = it)) })
+        Spacer(Modifier.height(20.dp))
+
+        // Optional history — collapsible
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = MaterialTheme.colorScheme.surfaceContainerLow,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(Modifier.padding(14.dp)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .selectable(selected = showOptional, onClick = { showOptional = !showOptional })
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Additional history (optional)", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                    Icon(if (showOptional) Icons.Default.ExpandLess else Icons.Default.ExpandMore, null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+                AnimatedVisibility(visible = showOptional) {
+                    Column {
+                        Spacer(Modifier.height(12.dp))
+                        Text("These answers are optional and help your audiologist if you proceed to a consultation.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 18.sp)
+                        Spacer(Modifier.height(12.dp))
+                        YesNoQuestion("Do you hear ringing, buzzing or other sounds in your ears (tinnitus)?", session.hasTinnitus, { onChange(session.copy(hasTinnitus = it)) })
+                        Spacer(Modifier.height(10.dp))
+                        YesNoQuestion("Have you had significant noise exposure at work or regularly?", session.hasNoiseExposure, { onChange(session.copy(hasNoiseExposure = it)) })
+                    }
+                }
+            }
+        }
 
         Spacer(Modifier.height(24.dp))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f).height(52.dp), shape = RoundedCornerShape(50)) {
-                Text("Back")
-            }
+            OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f).height(52.dp), shape = RoundedCornerShape(50)) { Text("Back") }
             Button(onClick = onNext, modifier = Modifier.weight(2f).height(52.dp), shape = RoundedCornerShape(50)) {
                 Text("Continue", fontWeight = FontWeight.Bold)
             }
@@ -582,122 +654,454 @@ private fun EnvironmentStep(
     onNext: () -> Unit,
     onBack: () -> Unit
 ) {
-    val canProceed = session.headphoneConfirmed && session.quietRoomConfirmed
+    val context = LocalContext.current
+    val scope   = rememberCoroutineScope()
+    var showSkipWarning by remember { mutableStateOf(false) }
+
+    // Headphone channel test state: idle | playing_left | playing_right | ask | done_pass | done_fail
+    var headphoneTestState by remember { mutableStateOf("idle") }
+    var headphoneAnswer by remember { mutableStateOf("") }
+
+    // Noise check state: idle | checking | done
+    var noiseCheckState by remember { mutableStateOf("idle") }
+
+    // Runtime mic permission launcher — triggers noise measurement after grant
+    val micPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            noiseCheckState = "checking"
+            scope.launch {
+                val db     = withContext(Dispatchers.IO) { measureAmbientDb() }
+                val status = when {
+                    db == null     -> CheckStatus.UNAVAILABLE
+                    db < 60f       -> CheckStatus.PASSED
+                    else           -> CheckStatus.FAILED
+                }
+                onChange(session.copy(noiseCheckStatus = status, measuredAmbientDb = db))
+                noiseCheckState = "done"
+            }
+        } else {
+            onChange(session.copy(noiseCheckStatus = CheckStatus.UNAVAILABLE, measuredAmbientDb = null))
+            noiseCheckState = "done"
+        }
+    }
+
+    // Skip-checks warning dialog
+    if (showSkipWarning) {
+        AlertDialog(
+            onDismissRequest = { showSkipWarning = false },
+            icon = { Icon(Icons.Default.Warning, null, tint = MaterialTheme.colorScheme.error) },
+            title = { Text("Checks not completed", fontWeight = FontWeight.Bold) },
+            text = {
+                Text(
+                    "Skipping environment checks means your result will be labelled Unverified Screening. It cannot be treated as clinically reliable.\n\nProceed only if checks are truly unavailable on this device.",
+                    style = MaterialTheme.typography.bodyMedium, lineHeight = 20.sp
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onChange(session.copy(checksSkipped = true, headphoneCheckStatus = CheckStatus.SKIPPED, noiseCheckStatus = CheckStatus.SKIPPED))
+                        showSkipWarning = false
+                        onNext()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) { Text("Proceed unverified") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showSkipWarning = false }) { Text("Go back") }
+            }
+        )
+    }
+
+    val checksReady = session.headphoneCheckStatus == CheckStatus.PASSED &&
+                      session.noiseCheckStatus in listOf(CheckStatus.PASSED, CheckStatus.FAILED, CheckStatus.UNAVAILABLE)
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp)) {
-        StepHeader(step = 3, total = 5, title = "Test Environment")
+        StepHeader(step = 3, total = 5, title = "Environment Check")
         Spacer(Modifier.height(8.dp))
-        Text("Good testing conditions are essential for reliable results.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        Text("We run two quick checks before the test. Both can be skipped if unavailable, but skipping reduces result reliability.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 20.sp)
         Spacer(Modifier.height(20.dp))
 
-        CheckConfirmCard(
-            icon    = Icons.Default.Headphones,
-            title   = "Headphones connected and on",
-            body    = "Use wired or Bluetooth headphones. Do not use phone speaker — it cannot deliver sounds to individual ears.",
-            checked = session.headphoneConfirmed,
-            onToggle = { onChange(session.copy(headphoneConfirmed = !session.headphoneConfirmed)) }
-        )
-        Spacer(Modifier.height(12.dp))
-        CheckConfirmCard(
-            icon    = Icons.Default.VolumeOff,
-            title   = "I am in a quiet room",
-            body    = "Background noise causes false results. Move away from TVs, traffic, conversations and air conditioning.",
-            checked = session.quietRoomConfirmed,
-            onToggle = { onChange(session.copy(quietRoomConfirmed = !session.quietRoomConfirmed)) }
-        )
-        Spacer(Modifier.height(12.dp))
-        NoticeBox(Icons.Default.VolumeUp, "Set your device volume to about 70%. Very low volume gives false 'not heard' results; very high volume may cause discomfort.", MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer)
 
-        Spacer(Modifier.height(24.dp))
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f).height(52.dp), shape = RoundedCornerShape(50)) { Text("Back") }
-            Button(onClick = onNext, enabled = canProceed, modifier = Modifier.weight(2f).height(52.dp), shape = RoundedCornerShape(50)) {
-                Text("Continue", fontWeight = FontWeight.Bold)
+        // ── Check 1: Headphone channel test ──────────────────────────────────
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = when (session.headphoneCheckStatus) {
+                CheckStatus.PASSED  -> MaterialTheme.colorScheme.primaryContainer
+                CheckStatus.FAILED  -> MaterialTheme.colorScheme.errorContainer
+                CheckStatus.SKIPPED -> MaterialTheme.colorScheme.surfaceContainerHigh
+                else                -> MaterialTheme.colorScheme.surfaceContainerLow
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(Modifier.padding(16.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Headphones, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                    Text("Headphone channel check", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.weight(1f))
+                    CheckStatusBadge(session.headphoneCheckStatus)
+                }
+                Spacer(Modifier.height(6.dp))
+                Text("Put your headphones on. We play a tone in your left ear — tap to confirm which side you hear it.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 18.sp)
+                Spacer(Modifier.height(12.dp))
+
+                when {
+                    session.headphoneCheckStatus == CheckStatus.PASSED ||
+                    session.headphoneCheckStatus == CheckStatus.FAILED  -> { /* show status via badge above */ }
+
+                    headphoneTestState == "idle" -> {
+                        OutlinedButton(
+                            onClick = {
+                                headphoneTestState = "playing_left"
+                                scope.launch {
+                                    withContext(Dispatchers.IO) { playTone(1000.0, 1000, "LEFT", 0.6) }
+                                    headphoneTestState = "ask"
+                                }
+                            },
+                            shape = RoundedCornerShape(50), modifier = Modifier.height(40.dp)
+                        ) {
+                            Icon(Icons.Default.PlayArrow, null, modifier = Modifier.size(16.dp))
+                            Spacer(Modifier.width(6.dp))
+                            Text("Play test tone", fontSize = 13.sp)
+                        }
+                    }
+
+                    headphoneTestState == "playing_left" -> {
+                        Text("Playing tone — which ear do you hear it in?", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.SemiBold)
+                    }
+
+                    headphoneTestState == "ask" -> {
+                        Text("Which side did you hear it?", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
+                        Spacer(Modifier.height(8.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            listOf("Left", "Right", "Both / Neither").forEach { answer ->
+                                OutlinedButton(
+                                    onClick = {
+                                        headphoneAnswer = answer
+                                        val passed = answer == "Left"
+                                        headphoneTestState = if (passed) "done_pass" else "done_fail"
+                                        onChange(session.copy(headphoneCheckStatus = if (passed) CheckStatus.PASSED else CheckStatus.FAILED))
+                                    },
+                                    shape = RoundedCornerShape(50),
+                                    modifier = Modifier.height(36.dp),
+                                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)
+                                ) { Text(answer, fontSize = 12.sp) }
+                            }
+                        }
+                    }
+                }
+
+                if (session.headphoneCheckStatus == CheckStatus.FAILED) {
+                    Spacer(Modifier.height(8.dp))
+                    Text("Check failed — check headphone connection or try a different pair. You may still proceed.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error, lineHeight = 16.sp)
+                    Spacer(Modifier.height(6.dp))
+                    TextButton(onClick = {
+                        headphoneTestState = "idle"
+                        onChange(session.copy(headphoneCheckStatus = CheckStatus.PENDING))
+                    }) { Text("Retry", fontSize = 12.sp) }
+                }
+
+                if (session.headphoneCheckStatus == CheckStatus.PENDING && headphoneTestState == "idle") {
+                    Spacer(Modifier.height(4.dp))
+                    TextButton(onClick = { onChange(session.copy(headphoneCheckStatus = CheckStatus.SKIPPED)) }) {
+                        Text("Skip this check", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
             }
         }
+
+        Spacer(Modifier.height(12.dp))
+
+
+        // ── Check 2: Ambient noise check ─────────────────────────────────────
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = when (session.noiseCheckStatus) {
+                CheckStatus.PASSED  -> MaterialTheme.colorScheme.primaryContainer
+                CheckStatus.FAILED  -> MaterialTheme.colorScheme.errorContainer
+                CheckStatus.SKIPPED -> MaterialTheme.colorScheme.surfaceContainerHigh
+                else                -> MaterialTheme.colorScheme.surfaceContainerLow
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Column(Modifier.padding(16.dp)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.VolumeOff, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+                    Text("Ambient noise check", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.weight(1f))
+                    CheckStatusBadge(session.noiseCheckStatus)
+                }
+                Spacer(Modifier.height(6.dp))
+                Text("We sample ambient noise for 2 seconds via microphone to check if the room is quiet enough.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 18.sp)
+
+                if (session.measuredAmbientDb != null) {
+                    Spacer(Modifier.height(8.dp))
+                    val db = session.measuredAmbientDb
+                    val label = when {
+                        db < 45f -> "Quiet — good conditions"
+                        db < 60f -> "Moderate noise — results may be affected"
+                        else     -> "Too loud — move to a quieter space"
+                    }
+                    Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.surface) {
+                        Row(Modifier.padding(10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Text("~${db.toInt()} dB", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = if (db < 45f) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
+                            Text(label, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+                }
+                if (session.noiseCheckStatus == CheckStatus.UNAVAILABLE) {
+                    Spacer(Modifier.height(6.dp))
+                    Text("Microphone unavailable — permission denied or device unsupported. This check will be skipped.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 16.sp)
+                }
+
+                Spacer(Modifier.height(10.dp))
+                when (noiseCheckState) {
+                    "idle" -> {
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            OutlinedButton(
+                                onClick = {
+                                    // Request RECORD_AUDIO if not yet granted; launcher fires measurement on grant
+                                    val isAlreadyGranted = ContextCompat.checkSelfPermission(
+                                        context, Manifest.permission.RECORD_AUDIO
+                                    ) == PackageManager.PERMISSION_GRANTED
+
+                                    if (isAlreadyGranted) {
+                                        noiseCheckState = "checking"
+                                        scope.launch {
+                                            val db     = withContext(Dispatchers.IO) { measureAmbientDb() }
+                                            val status = when {
+                                                db == null -> CheckStatus.UNAVAILABLE
+                                                db < 60f   -> CheckStatus.PASSED
+                                                else       -> CheckStatus.FAILED
+                                            }
+                                            onChange(session.copy(noiseCheckStatus = status, measuredAmbientDb = db))
+                                            noiseCheckState = "done"
+                                        }
+                                    } else {
+                                        micPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                                    }
+                                },
+                                shape = RoundedCornerShape(50), modifier = Modifier.height(40.dp)
+                            ) {
+                                Icon(Icons.Default.Mic, null, modifier = Modifier.size(16.dp))
+                                Spacer(Modifier.width(6.dp))
+                                Text("Check noise level", fontSize = 13.sp)
+                            }
+                            TextButton(onClick = { onChange(session.copy(noiseCheckStatus = CheckStatus.SKIPPED)); noiseCheckState = "done" }) {
+                                Text("Skip", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                        }
+                    }
+                    "checking" -> {
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
+                            Text("Sampling 2 seconds...", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                        }
+                    }
+                    "done" -> {
+                        if (session.noiseCheckStatus == CheckStatus.FAILED) {
+                            TextButton(onClick = {
+                                noiseCheckState = "idle"
+                                onChange(session.copy(noiseCheckStatus = CheckStatus.PENDING, measuredAmbientDb = null))
+                            }) { Text("Retry after moving", fontSize = 12.sp) }
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(Modifier.height(12.dp))
+
+
+        // ── Volume guidance ───────────────────────────────────────────────────
+        NoticeBox(
+            Icons.Default.VolumeUp,
+            "Set your volume to a comfortable listening level — loud enough to hear speech clearly, not uncomfortably loud.",
+            MaterialTheme.colorScheme.secondaryContainer,
+            MaterialTheme.colorScheme.onSecondaryContainer
+        )
+
         Spacer(Modifier.height(24.dp))
+
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            OutlinedButton(onClick = onBack, modifier = Modifier.weight(1f).height(52.dp), shape = RoundedCornerShape(50)) { Text("Back") }
+            Button(
+                onClick = onNext,
+                enabled = checksReady,
+                modifier = Modifier.weight(2f).height(52.dp),
+                shape = RoundedCornerShape(50)
+            ) { Text("Continue", fontWeight = FontWeight.Bold) }
+        }
+        Spacer(Modifier.height(8.dp))
+        TextButton(
+            onClick = { showSkipWarning = true },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Skip all checks (unverified result)", fontSize = 13.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Spacer(Modifier.height(16.dp))
     }
 }
 
 
 // ─── Step 5: Practice ─────────────────────────────────────────────────────────
 
+// States: idle → countdown (3,2,1) → playing → responding → done_heard | done_missed
 @Composable
 private fun PracticeStep(onReady: () -> Unit, onBack: () -> Unit) {
-    var practiceState by remember { mutableStateOf<String>("idle") } // idle | playing | done_heard | done_missed
-    val scope = rememberCoroutineScope()
 
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    var practiceState  by remember { mutableStateOf("idle") }
+    var countdownValue by remember { mutableIntStateOf(3) }
+    val scope          = rememberCoroutineScope()
+
+    fun launchPracticeTone() {
+        scope.launch {
+            // Countdown 3 → 2 → 1
+            practiceState  = "countdown"
+            countdownValue = 3
+            repeat(3) { i ->
+                countdownValue = 3 - i
+                delay(800)
+            }
+
+            // Play tone for 1500ms at higher amplitude so it's obvious
+            practiceState = "playing"
+            launch { withContext(Dispatchers.IO) { playTone(1000.0, 1500, "RIGHT", amplitude = 0.7) } }
+
+            // After tone ends, keep button live 1.5s more before timing out
+            delay(1500)
+            if (practiceState == "playing") {
+                practiceState = "responding"
+                delay(1500)
+                if (practiceState == "responding") practiceState = "done_missed"
+            }
+        }
+    }
+
+    Column(
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         StepHeader(step = 4, total = 5, title = "Practice Round")
         Spacer(Modifier.height(12.dp))
         Text(
-            "We will play a practice tone so you know what to listen for. The real test tones may be much softer — tap immediately when you hear anything.",
-            style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 24.sp, textAlign = TextAlign.Center
+            "A practice tone will play in your right ear. Tap the moment you hear anything — even very faintly. Real test tones will be softer.",
+            style      = MaterialTheme.typography.bodyLarge,
+            color      = MaterialTheme.colorScheme.onSurfaceVariant,
+            lineHeight = 24.sp,
+            textAlign  = TextAlign.Center
         )
         Spacer(Modifier.height(28.dp))
 
         when (practiceState) {
+
             "idle" -> {
                 OutlinedButton(
-                    onClick = {
-                        practiceState = "playing"
-                        scope.launch {
-                            withContext(Dispatchers.IO) { playTone(1000.0, 1200, "RIGHT", amplitude = 0.7) }
-                            practiceState = "done_missed"
-                        }
-                    },
+                    onClick  = { launchPracticeTone() },
                     modifier = Modifier.height(52.dp),
-                    shape = RoundedCornerShape(50)
+                    shape    = RoundedCornerShape(50)
                 ) {
                     Icon(Icons.Default.PlayArrow, null, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(8.dp))
-                    Text("Play practice tone (right ear)", fontWeight = FontWeight.SemiBold)
+                    Text("Play practice tone", fontWeight = FontWeight.SemiBold)
                 }
             }
-            "playing" -> {
-                FilledIconButton(
-                    onClick = { practiceState = "done_heard" },
-                    modifier = Modifier.size(100.dp),
-                    shape = RoundedCornerShape(50),
-                    colors = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
+
+            "countdown" -> {
+                Surface(
+                    shape    = RoundedCornerShape(50),
+                    color    = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.size(90.dp)
                 ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Icon(Icons.Default.Hearing, null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(34.dp))
-                        Text("Tap!\nI heard it", color = MaterialTheme.colorScheme.onPrimary, fontSize = 11.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, lineHeight = 13.sp)
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            "$countdownValue",
+                            fontSize   = 42.sp,
+                            fontWeight = FontWeight.Bold,
+                            color      = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
                     }
                 }
-                Spacer(Modifier.height(12.dp))
-                Text("Sound is playing — tap above if you hear it", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(Modifier.height(14.dp))
+                Text(
+                    "Get ready — tone plays in your right ear",
+                    style     = MaterialTheme.typography.bodyMedium,
+                    color     = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
             }
+
+            "playing", "responding" -> {
+                FilledIconButton(
+                    onClick  = { if (practiceState == "playing" || practiceState == "responding") practiceState = "done_heard" },
+                    modifier = Modifier.size(110.dp),
+                    shape    = RoundedCornerShape(50),
+                    colors   = IconButtonDefaults.filledIconButtonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(Icons.Default.Hearing, null, tint = MaterialTheme.colorScheme.onPrimary, modifier = Modifier.size(36.dp))
+                        Spacer(Modifier.height(4.dp))
+                        Text("I heard it", color = MaterialTheme.colorScheme.onPrimary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    if (practiceState == "playing") "Tone playing — tap now if you hear it"
+                    else                            "Did you catch it? Tap above",
+                    style     = MaterialTheme.typography.bodyMedium,
+                    color     = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+            }
+
             "done_heard" -> {
-                Icon(Icons.Default.CheckCircle, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(56.dp))
+                Icon(Icons.Default.CheckCircle, null, tint = Color(0xFF2E7D32), modifier = Modifier.size(60.dp))
                 Spacer(Modifier.height(12.dp))
-                Text("You heard it!", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Text("That is exactly how to respond during the real test.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
+                Text("You heard it!", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32))
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    "Respond exactly like that during the real test.",
+                    style     = MaterialTheme.typography.bodyMedium,
+                    color     = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
             }
+
             "done_missed" -> {
-                Icon(Icons.Default.HelpOutline, null, tint = MaterialTheme.colorScheme.tertiary, modifier = Modifier.size(56.dp))
+                Icon(Icons.Default.HelpOutline, null, tint = MaterialTheme.colorScheme.tertiary, modifier = Modifier.size(60.dp))
                 Spacer(Modifier.height(12.dp))
-                Text("Did not tap in time", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
-                Text("Try again. Tap the button as soon as you hear anything, even very faintly.", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant, textAlign = TextAlign.Center)
-                Spacer(Modifier.height(16.dp))
+                Text("Didn't catch it?", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    "That's fine — tap the instant you hear anything, even very faintly. You can try again or skip straight to the test.",
+                    style      = MaterialTheme.typography.bodyMedium,
+                    color      = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign  = TextAlign.Center,
+                    lineHeight = 20.sp
+                )
+                Spacer(Modifier.height(14.dp))
                 OutlinedButton(
-                    onClick = {
-                        practiceState = "playing"
-                        scope.launch {
-                            withContext(Dispatchers.IO) { playTone(1000.0, 1200, "RIGHT", amplitude = 0.7) }
-                            if (practiceState == "playing") practiceState = "done_missed"
-                        }
-                    },
-                    shape = RoundedCornerShape(50)
-                ) { Text("Try practice again") }
+                    onClick  = { launchPracticeTone() },
+                    shape    = RoundedCornerShape(50),
+                    modifier = Modifier.height(46.dp)
+                ) {
+                    Icon(Icons.Default.Refresh, null, modifier = Modifier.size(16.dp))
+                    Spacer(Modifier.width(6.dp))
+                    Text("Try again")
+                }
             }
         }
 
         Spacer(Modifier.weight(1f))
 
         if (practiceState == "done_heard" || practiceState == "done_missed") {
-            Button(onClick = onReady, modifier = Modifier.fillMaxWidth().height(56.dp), shape = RoundedCornerShape(50)) {
+            Button(
+                onClick  = onReady,
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                shape    = RoundedCornerShape(50)
+            ) {
                 Icon(Icons.Default.PlayArrow, null, modifier = Modifier.size(20.dp))
                 Spacer(Modifier.width(8.dp))
                 Text("Start real test", fontWeight = FontWeight.Bold, fontSize = 16.sp)
@@ -833,9 +1237,9 @@ private fun TestActiveStep(
             }
         }
 
-        Spacer(Modifier.height(28.dp))
+        Spacer(Modifier.height(32.dp))
 
-        // Hear button
+        // Primary response — large prominent tap target
         FilledIconButton(
             onClick = {
                 if (isPlaying && currentTone != null) {
@@ -845,17 +1249,33 @@ private fun TestActiveStep(
                     toneIndex++
                 }
             },
-            modifier = Modifier.size(110.dp),
+            modifier = Modifier.size(124.dp),
             shape = RoundedCornerShape(50),
-            colors = IconButtonDefaults.filledIconButtonColors(containerColor = if (isPlaying) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh)
+            colors = IconButtonDefaults.filledIconButtonColors(
+                containerColor = if (isPlaying) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHigh
+            )
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(Icons.Default.Hearing, null, tint = if (isPlaying) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.size(36.dp))
-                Text("Yes, I\nheard it", color = if (isPlaying) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, lineHeight = 14.sp)
+                Icon(
+                    Icons.Default.Hearing, null,
+                    tint     = if (isPlaying) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(42.dp)
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "I heard it",
+                    color      = if (isPlaying) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontSize   = 12.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
-        Spacer(Modifier.height(16.dp))
-        OutlinedButton(
+
+        // Generous gap prevents accidental taps on the secondary button
+        Spacer(Modifier.height(32.dp))
+
+        // Secondary response — equally accessible, full-width tonal button
+        FilledTonalButton(
             onClick = {
                 if (isPlaying && currentTone != null) {
                     responses.add(ToneResponse(ear = currentTone.first, frequencyHz = currentTone.second, heard = false, responseTimeMs = 0))
@@ -863,11 +1283,13 @@ private fun TestActiveStep(
                     toneIndex++
                 }
             },
-            enabled = isPlaying,
-            shape = RoundedCornerShape(50),
-            modifier = Modifier.height(50.dp)
+            enabled  = isPlaying,
+            shape    = RoundedCornerShape(50),
+            modifier = Modifier.fillMaxWidth().height(56.dp)
         ) {
-            Text("I could not hear this", fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
+            Icon(Icons.Default.VolumeOff, null, modifier = Modifier.size(20.dp))
+            Spacer(Modifier.width(8.dp))
+            Text("I couldn't hear this", fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
         }
     }
 }
@@ -882,58 +1304,135 @@ private fun ResultStep(
     onBrowseHAs: () -> Unit,
     onRetake: () -> Unit
 ) {
+    val context = LocalContext.current
     val outcome = session.outcome ?: TestOutcome.INCONCLUSIVE
+
+
+    // Plain-language lead sentence — most prominent element (improvement #4)
+    val leadSentence = when (outcome) {
+        TestOutcome.PASS         -> "No concern detected."
+        TestOutcome.REFER        -> "Possible hearing difficulty detected."
+        TestOutcome.INCONCLUSIVE -> "We couldn't reliably assess your hearing."
+    }
+
+    // Semantic result colors — fixed regardless of theme (health convention: green/red/amber)
+    val heroColor = when (outcome) {
+        TestOutcome.PASS         -> Color(0xFF2E7D32)   // green 800
+        TestOutcome.REFER        -> Color(0xFFC62828)   // red 800
+        TestOutcome.INCONCLUSIVE -> Color(0xFFE65100)   // deep orange 900
+    }
+    val heroBg = when (outcome) {
+        TestOutcome.PASS         -> Color(0xFFE8F5E9)   // green 50
+        TestOutcome.REFER        -> Color(0xFFFFEBEE)   // red 50
+        TestOutcome.INCONCLUSIVE -> Color(0xFFFFF3E0)   // orange 50
+    }
+    val heroIcon = when (outcome) {
+        TestOutcome.PASS         -> Icons.Default.CheckCircle
+        TestOutcome.REFER        -> Icons.Default.HearingDisabled
+        TestOutcome.INCONCLUSIVE -> Icons.Default.HelpOutline
+    }
+
+    // Shareable text report (improvement #3)
+    val reportText = buildShareableReport(session)
+
 
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp)) {
         StepHeader(step = 5, total = 5, title = "Your Result")
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(16.dp))
 
-        // Result hero card
-        val (heroColor, heroBg, heroIcon, heroTitle, heroBody) = when (outcome) {
-            TestOutcome.PASS         -> ResultDisplay(
-                color  = MaterialTheme.colorScheme.primary,
-                bg     = MaterialTheme.colorScheme.primaryContainer,
-                icon   = Icons.Default.CheckCircle,
-                title  = "PASS — No Screening Concern",
-                body   = "No significant hearing difficulty was detected in this screening. Persistent concerns should still be assessed by an audiologist."
-            )
-            TestOutcome.REFER        -> ResultDisplay(
-                color  = MaterialTheme.colorScheme.error,
-                bg     = MaterialTheme.colorScheme.errorContainer,
-                icon   = Icons.Default.HearingDisabled,
-                title  = "REFER — Possible Hearing Difficulty",
-                body   = "This screening detected a possible hearing difficulty. A comprehensive hearing assessment by a qualified audiologist is recommended."
-            )
-            TestOutcome.INCONCLUSIVE -> ResultDisplay(
-                color  = MaterialTheme.colorScheme.tertiary,
-                bg     = MaterialTheme.colorScheme.tertiaryContainer,
-                icon   = Icons.Default.HelpOutline,
-                title  = "INCONCLUSIVE",
-                body   = "The screening could not produce a reliable result. This may be due to environmental noise, equipment or response inconsistencies."
-            )
-        }
-
+        // ── Hero card with plain-language lead ───────────────────────────────
         Surface(shape = RoundedCornerShape(24.dp), color = heroBg, modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(heroIcon, null, tint = heroColor, modifier = Modifier.size(52.dp))
-                Spacer(Modifier.height(10.dp))
-                Text(heroTitle, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = heroColor, textAlign = TextAlign.Center)
+                Spacer(Modifier.height(12.dp))
+
+                // Plain-language lead — headline size, most prominent
+                Text(
+                    leadSentence,
+                    style      = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color      = heroColor,
+                    textAlign  = TextAlign.Center
+                )
                 Spacer(Modifier.height(6.dp))
-                Text(heroBody, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f), textAlign = TextAlign.Center, lineHeight = 20.sp)
+
+                // Unverified badge if checks were skipped
+                if (session.checksSkipped) {
+                    Spacer(Modifier.height(4.dp))
+                    Surface(
+                        shape = RoundedCornerShape(50),
+                        color = MaterialTheme.colorScheme.errorContainer
+                    ) {
+                        Text(
+                            "Unverified screening — environment checks skipped",
+                            style      = MaterialTheme.typography.labelSmall,
+                            color      = MaterialTheme.colorScheme.onErrorContainer,
+                            fontWeight = FontWeight.Bold,
+                            modifier   = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                            textAlign  = TextAlign.Center
+                        )
+                    }
+                    Spacer(Modifier.height(6.dp))
+                }
+
+                // Clinical classification label
+                Text(
+                    when (outcome) {
+                        TestOutcome.PASS         -> "PASS — No Screening Concern"
+                        TestOutcome.REFER        -> "REFER — Possible Hearing Difficulty"
+                        TestOutcome.INCONCLUSIVE -> "INCONCLUSIVE"
+                    },
+                    style      = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold,
+                    color      = heroColor.copy(alpha = 0.75f)
+                )
+                Spacer(Modifier.height(8.dp))
+
+                // Supporting explanation
+                Text(
+                    when (outcome) {
+                        TestOutcome.PASS         -> "No significant hearing difficulty was detected. If you still have concerns, see an audiologist."
+                        TestOutcome.REFER        -> "A comprehensive hearing assessment by a qualified audiologist is recommended."
+                        TestOutcome.INCONCLUSIVE -> "This may be due to environmental noise, equipment issues, or response inconsistencies."
+                    },
+                    style     = MaterialTheme.typography.bodyMedium,
+                    color     = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+                    textAlign = TextAlign.Center,
+                    lineHeight = 20.sp
+                )
             }
         }
-
         Spacer(Modifier.height(12.dp))
 
-        // Ear-specific summary
+        // ── Screening audiogram (improvement #2) ─────────────────────────────
+        if (outcome != TestOutcome.INCONCLUSIVE && session.responses.isNotEmpty()) {
+            Surface(
+                shape    = RoundedCornerShape(16.dp),
+                color    = MaterialTheme.colorScheme.surfaceContainerHigh,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(Modifier.padding(16.dp)) {
+                    Text("SCREENING AUDIOGRAM", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, letterSpacing = 0.8.sp)
+                    Spacer(Modifier.height(14.dp))
+                    ScreeningAudiogram(responses = session.responses)
+                }
+            }
+            Spacer(Modifier.height(12.dp))
+        }
+
+        // ── Ear-specific summary ──────────────────────────────────────────────
         if (outcome != TestOutcome.INCONCLUSIVE) {
-            Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surfaceContainerHigh, modifier = Modifier.fillMaxWidth()) {
+            Surface(
+                shape    = RoundedCornerShape(16.dp),
+                color    = MaterialTheme.colorScheme.surfaceContainerHigh,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Column(Modifier.padding(18.dp)) {
                     Text("EAR-SPECIFIC SUMMARY", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, letterSpacing = 0.8.sp)
                     Spacer(Modifier.height(12.dp))
-                    EarSummaryRow("Left ear",  session.leftMissed,  3)
+                    EarSummaryRow("Left ear",  session.leftMissed,  5)
                     Spacer(Modifier.height(8.dp))
-                    EarSummaryRow("Right ear", session.rightMissed, 3)
+                    EarSummaryRow("Right ear", session.rightMissed, 5)
                     Spacer(Modifier.height(10.dp))
                     DisclaimerBox("Smartphone audio is not audiologically calibrated. These results indicate a possible concern only.")
                 }
@@ -941,40 +1440,81 @@ private fun ResultStep(
             Spacer(Modifier.height(12.dp))
         }
 
-        // Next steps
-        Surface(shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.secondaryContainer, modifier = Modifier.fillMaxWidth()) {
+        // ── Recommended next step ─────────────────────────────────────────────
+        Surface(
+            shape    = RoundedCornerShape(16.dp),
+            color    = MaterialTheme.colorScheme.secondaryContainer,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Column(Modifier.padding(18.dp)) {
                 Text("RECOMMENDED NEXT STEP", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f), letterSpacing = 0.8.sp)
                 Spacer(Modifier.height(8.dp))
-                val nextStep = when (outcome) {
-                    TestOutcome.PASS         -> "Your screening was normal. If you still have concerns or symptoms, please see an audiologist — a PASS result does not rule out hearing difficulties."
-                    TestOutcome.REFER        -> "Book a comprehensive hearing assessment with a certified audiologist. Bring this screening result to your appointment."
-                    TestOutcome.INCONCLUSIVE -> "Ensure you are in a very quiet room with headphones on full volume and retry the test. If problems persist, consult an audiologist directly."
-                }
-                Text(nextStep, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSecondaryContainer, lineHeight = 20.sp)
+                Text(
+                    when (outcome) {
+                        TestOutcome.PASS         -> "Your screening was normal. If you still have concerns or symptoms, please see an audiologist — a PASS result does not rule out hearing difficulties."
+                        TestOutcome.REFER        -> "Book a comprehensive hearing assessment with a certified audiologist. Bring this screening result to your appointment."
+                        TestOutcome.INCONCLUSIVE -> "Ensure you are in a very quiet room with headphones on full volume and retry the test. If problems persist, consult an audiologist directly."
+                    },
+                    style      = MaterialTheme.typography.bodyMedium,
+                    color      = MaterialTheme.colorScheme.onSecondaryContainer,
+                    lineHeight = 20.sp
+                )
             }
         }
-
         Spacer(Modifier.height(16.dp))
 
-        // CTAs
-        if (outcome == TestOutcome.REFER || outcome == TestOutcome.PASS) {
-            Button(onClick = onBookConsult, modifier = Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(50)) {
+        // ── Primary CTA — one clear next action (improvement #4) ─────────────
+        if (outcome == TestOutcome.PASS || outcome == TestOutcome.REFER) {
+            Button(
+                onClick  = onBookConsult,
+                modifier = Modifier.fillMaxWidth().height(52.dp),
+                shape    = RoundedCornerShape(50)
+            ) {
                 Icon(Icons.Default.SupportAgent, null, modifier = Modifier.size(20.dp))
                 Spacer(Modifier.width(8.dp))
                 Text("Book professional assessment", fontWeight = FontWeight.Bold)
             }
             Spacer(Modifier.height(10.dp))
         }
+
+        // Share result button (improvement #3)
+        OutlinedButton(
+            onClick = {
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_SUBJECT, "HearinGuru Screening Result")
+                    putExtra(Intent.EXTRA_TEXT, reportText)
+                }
+                context.startActivity(Intent.createChooser(shareIntent, "Share screening result"))
+            },
+            modifier = Modifier.fillMaxWidth().height(50.dp),
+            shape    = RoundedCornerShape(50)
+        ) {
+            Icon(Icons.Default.Share, null, modifier = Modifier.size(20.dp))
+            Spacer(Modifier.width(8.dp))
+            Text("Share result", fontWeight = FontWeight.SemiBold)
+        }
+        Spacer(Modifier.height(8.dp))
+
+        // Browse hearing aids — secondary for REFER
         if (outcome == TestOutcome.REFER) {
-            OutlinedButton(onClick = onBrowseHAs, modifier = Modifier.fillMaxWidth().height(50.dp), shape = RoundedCornerShape(50)) {
+            OutlinedButton(
+                onClick  = onBrowseHAs,
+                modifier = Modifier.fillMaxWidth().height(50.dp),
+                shape    = RoundedCornerShape(50)
+            ) {
                 Icon(Icons.Default.HearingDisabled, null, modifier = Modifier.size(20.dp))
                 Spacer(Modifier.width(8.dp))
                 Text("Browse hearing aids", fontWeight = FontWeight.SemiBold)
             }
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(8.dp))
         }
-        OutlinedButton(onClick = onRetake, modifier = Modifier.fillMaxWidth().height(50.dp), shape = RoundedCornerShape(50)) {
+
+        OutlinedButton(
+            onClick  = onRetake,
+            modifier = Modifier.fillMaxWidth().height(50.dp),
+            shape    = RoundedCornerShape(50)
+        ) {
             Icon(Icons.Default.Refresh, null, modifier = Modifier.size(20.dp))
             Spacer(Modifier.width(8.dp))
             Text("Start over", fontWeight = FontWeight.SemiBold)
@@ -1118,16 +1658,23 @@ private fun CheckConfirmCard(icon: ImageVector, title: String, body: String, che
 
 @Composable
 private fun EarSummaryRow(label: String, missed: Int, total: Int) {
-    val heard     = total - missed
-    val isProblem = missed >= 2
+    val heard        = total - missed
+    val isProblem    = missed >= 2
+    val resultColor  = if (isProblem) Color(0xFFC62828) else Color(0xFF2E7D32)
+
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
         Text(label, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text("$heard/$total heard", style = MaterialTheme.typography.bodyMedium, color = if (isProblem) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+            Text(
+                "$heard/$total heard",
+                style      = MaterialTheme.typography.bodyMedium,
+                color      = resultColor,
+                fontWeight = FontWeight.Bold
+            )
             Icon(
                 if (isProblem) Icons.Default.Warning else Icons.Default.CheckCircle,
                 null,
-                tint = if (isProblem) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
+                tint     = resultColor,
                 modifier = Modifier.size(18.dp)
             )
         }
@@ -1158,3 +1705,293 @@ fun NoticeBox(icon: ImageVector, text: String, containerColor: Color, contentCol
 private data class ResultDisplay(
     val color: Color, val bg: Color, val icon: ImageVector, val title: String, val body: String
 )
+
+
+@Composable
+private fun CheckStatusBadge(status: CheckStatus) {
+    val text = when (status) {
+        CheckStatus.PASSED      -> "Passed"
+        CheckStatus.FAILED      -> "Failed"
+        CheckStatus.SKIPPED     -> "Skipped"
+        CheckStatus.PENDING     -> "Pending"
+        CheckStatus.UNAVAILABLE -> "N/A"
+    }
+    val bg = when (status) {
+        CheckStatus.PASSED      -> MaterialTheme.colorScheme.primaryContainer
+        CheckStatus.FAILED      -> MaterialTheme.colorScheme.errorContainer
+        CheckStatus.SKIPPED     -> MaterialTheme.colorScheme.surfaceContainerHigh
+        CheckStatus.PENDING     -> MaterialTheme.colorScheme.surfaceContainerLow
+        CheckStatus.UNAVAILABLE -> MaterialTheme.colorScheme.surfaceContainerLow
+    }
+    val fg = when (status) {
+        CheckStatus.PASSED      -> MaterialTheme.colorScheme.onPrimaryContainer
+        CheckStatus.FAILED      -> MaterialTheme.colorScheme.onErrorContainer
+        else                    -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Surface(shape = RoundedCornerShape(50), color = bg) {
+        Text(
+            text,
+            style      = MaterialTheme.typography.labelSmall,
+            color      = fg,
+            fontWeight = FontWeight.Bold,
+            modifier   = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+        )
+    }
+}
+
+
+// ─── Screening audiogram (improvement #2) ────────────────────────────────────
+// Binary pass/fail chart at 1000, 2000, 4000 Hz per ear.
+// ○ = left ear,  ✕ = right ear.  Not a calibrated audiogram.
+
+@Composable
+private fun ScreeningAudiogram(
+    responses: List<ToneResponse>,
+    modifier: Modifier = Modifier
+) {
+    val freqs       = listOf(1000, 2000, 3000, 4000, 8000)
+    val leftByFreq  = responses.filter { it.ear == "LEFT"  }.associate { it.frequencyHz to it.heard }
+    val rightByFreq = responses.filter { it.ear == "RIGHT" }.associate { it.frequencyHz to it.heard }
+
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val errorColor   = MaterialTheme.colorScheme.error
+    val gridColor    = MaterialTheme.colorScheme.outlineVariant
+    val labelColor   = MaterialTheme.colorScheme.onSurfaceVariant
+
+    Column(modifier) {
+
+        // Legend
+        Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.size(10.dp).background(primaryColor, CircleShape))
+                Text("Left ear (○)", style = MaterialTheme.typography.labelSmall, color = labelColor)
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.size(10.dp).background(errorColor, RoundedCornerShape(2.dp)))
+                Text("Right ear (✕)", style = MaterialTheme.typography.labelSmall, color = labelColor)
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+
+        // Chart area: y-axis labels + canvas
+        Row(Modifier.fillMaxWidth().height(110.dp)) {
+
+            // Y-axis labels
+            Column(
+                modifier            = Modifier.width(44.dp).fillMaxHeight().padding(end = 6.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Not\nheard", style = MaterialTheme.typography.labelSmall, color = labelColor, lineHeight = 13.sp, textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
+                Text("Heard",     style = MaterialTheme.typography.labelSmall, color = labelColor, textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
+            }
+
+            // Canvas plot
+            Canvas(Modifier.weight(1f).fillMaxHeight()) {
+                val w       = size.width
+                val h       = size.height
+                val dotR    = 9.dp.toPx()
+                val crossR  = 7.dp.toPx()
+                val strokeW = 2.5.dp.toPx()
+                val connW   = 1.5.dp.toPx()
+
+                // Even x-positions for 5 frequencies
+                val xPositions = listOf(w * 0.05f, w * 0.27f, w * 0.50f, w * 0.73f, w * 0.95f)
+
+                // y: "not heard" = top 15%,  "heard" = bottom 85%
+                fun yFor(heard: Boolean) = if (heard) h * 0.85f else h * 0.15f
+
+                // Dashed grid lines at the two levels
+                listOf(h * 0.15f, h * 0.85f).forEach { y ->
+                    drawLine(
+                        color       = gridColor,
+                        start       = Offset(0f, y),
+                        end         = Offset(w, y),
+                        strokeWidth = 1.dp.toPx(),
+                        pathEffect  = PathEffect.dashPathEffect(floatArrayOf(8f, 5f))
+                    )
+                }
+
+                // Connect left-ear points with a thin line
+                for (i in 0 until freqs.size - 1) {
+                    val isFirstHeard  = leftByFreq[freqs[i]]
+                    val isSecondHeard = leftByFreq[freqs[i + 1]]
+                    if (isFirstHeard != null && isSecondHeard != null) {
+                        drawLine(
+                            color       = primaryColor.copy(alpha = 0.35f),
+                            start       = Offset(xPositions[i],     yFor(isFirstHeard)),
+                            end         = Offset(xPositions[i + 1], yFor(isSecondHeard)),
+                            strokeWidth = connW
+                        )
+                    }
+                }
+
+                // Connect right-ear points with a thin line
+                for (i in 0 until freqs.size - 1) {
+                    val isFirstHeard  = rightByFreq[freqs[i]]
+                    val isSecondHeard = rightByFreq[freqs[i + 1]]
+                    if (isFirstHeard != null && isSecondHeard != null) {
+                        drawLine(
+                            color       = errorColor.copy(alpha = 0.35f),
+                            start       = Offset(xPositions[i] + 14.dp.toPx(),     yFor(isFirstHeard)),
+                            end         = Offset(xPositions[i + 1] + 14.dp.toPx(), yFor(isSecondHeard)),
+                            strokeWidth = connW
+                        )
+                    }
+                }
+
+                // Plot each frequency
+                freqs.forEachIndexed { idx, freq ->
+                    val xLeft  = xPositions[idx]
+                    val xRight = xPositions[idx] + 14.dp.toPx()
+
+                    // Left ear — filled circle (○ symbol)
+                    leftByFreq[freq]?.let { heard ->
+                        drawCircle(
+                            color  = primaryColor,
+                            radius = dotR,
+                            center = Offset(xLeft, yFor(heard))
+                        )
+                    }
+
+                    // Right ear — cross mark (✕ symbol), slightly offset right
+                    rightByFreq[freq]?.let { heard ->
+                        val cx = xRight
+                        val cy = yFor(heard)
+                        drawLine(errorColor, Offset(cx - crossR, cy - crossR), Offset(cx + crossR, cy + crossR), strokeWidth = strokeW)
+                        drawLine(errorColor, Offset(cx + crossR, cy - crossR), Offset(cx - crossR, cy + crossR), strokeWidth = strokeW)
+                    }
+                }
+            }
+        }
+
+        // X-axis frequency labels
+        Row(Modifier.fillMaxWidth().padding(start = 44.dp)) {
+            freqs.forEach { freq ->
+                val label = when {
+                    freq < 1000  -> "${freq}Hz"
+                    freq == 3000 -> "3k"
+                    freq == 8000 -> "8k"
+                    else         -> "${freq / 1000}k"
+                }
+                Text(
+                    label,
+                    style     = MaterialTheme.typography.labelSmall,
+                    color     = labelColor,
+                    modifier  = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
+            }
+        }
+        Spacer(Modifier.height(2.dp))
+        Text(
+            "Frequency (Hz)",
+            style     = MaterialTheme.typography.labelSmall,
+            color     = labelColor,
+            modifier  = Modifier.fillMaxWidth().padding(start = 44.dp),
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(Modifier.height(10.dp))
+        DisclaimerBox("Screening chart — not a calibrated audiogram. Pass/fail at a single test level only.")
+    }
+}
+
+
+// ─── Shareable text report (improvement #3) ──────────────────────────────────
+
+private fun buildShareableReport(session: SessionState): String {
+    val outcome   = session.outcome ?: TestOutcome.INCONCLUSIVE
+    val dateLabel = java.time.LocalDate.now().toString()
+
+    val outcomeLine = when (outcome) {
+        TestOutcome.PASS         -> "PASS — No Screening Concern"
+        TestOutcome.REFER        -> "REFER — Possible Hearing Difficulty"
+        TestOutcome.INCONCLUSIVE -> "INCONCLUSIVE"
+    }
+
+    val sb = StringBuilder()
+
+    sb.appendLine("=== HearinGuru Hearing Screening Result ===")
+    sb.appendLine("Date:   $dateLabel")
+    sb.appendLine("Method: Pure-tone screening (1000, 2000, 4000 Hz)")
+    sb.appendLine()
+    sb.appendLine("RESULT: $outcomeLine")
+
+    if (session.checksSkipped) {
+        sb.appendLine("Note:   Environment checks were skipped — unverified screening.")
+    }
+
+    if (outcome != TestOutcome.INCONCLUSIVE && session.responses.isNotEmpty()) {
+        sb.appendLine()
+        sb.appendLine("EAR RESULTS:")
+
+        fun appendEar(earLabel: String, responses: List<ToneResponse>) {
+            val freqSummary = responses.joinToString(", ") { r ->
+                "${r.frequencyHz}Hz: ${if (r.heard) "heard" else "not heard"}"
+            }
+            sb.appendLine("  $earLabel: $freqSummary")
+        }
+
+        appendEar("Left ear",  session.responses.filter { it.ear == "LEFT"  })
+        appendEar("Right ear", session.responses.filter { it.ear == "RIGHT" })
+    }
+
+    sb.appendLine()
+    sb.appendLine(
+        "DISCLAIMER: This is a hearing screening for informational purposes only. " +
+        "It is not a clinical diagnosis and does not replace professional audiological evaluation. " +
+        "Results should be confirmed by a qualified audiologist."
+    )
+    sb.appendLine()
+    sb.appendLine("Generated by HearinGuru")
+
+    return sb.toString()
+}
+
+
+// ─── Ambient noise measurement ────────────────────────────────────────────────
+
+private fun measureAmbientDb(): Float? {
+    val sampleRate = 44100
+    val minBufSize = AudioRecord.getMinBufferSize(
+        sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT
+    )
+    if (minBufSize <= 0) return null
+
+    val recorder = try {
+        AudioRecord(
+            MediaRecorder.AudioSource.MIC, sampleRate,
+            AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT,
+            minBufSize * 4
+        )
+    } catch (e: Exception) { return null }
+
+    if (recorder.state != AudioRecord.STATE_INITIALIZED) {
+        recorder.release()
+        return null
+    }
+
+    val durationMs   = 2000
+    val totalSamples = sampleRate * durationMs / 1000
+    val sampleBuffer = ShortArray(totalSamples)
+    var samplesRead  = 0
+
+    recorder.startRecording()
+    while (samplesRead < totalSamples) {
+        val chunkSize = minOf(minBufSize, totalSamples - samplesRead)
+        val readCount = recorder.read(sampleBuffer, samplesRead, chunkSize)
+        if (readCount <= 0) break
+        samplesRead += readCount
+    }
+    recorder.stop()
+    recorder.release()
+
+    if (samplesRead == 0) return null
+
+    val sumOfSquares = sampleBuffer.take(samplesRead).sumOf { s -> s.toLong() * s }
+    val rmsValue     = sqrt(sumOfSquares.toDouble() / samplesRead)
+    val dbSpl        = (20.0 * log10(rmsValue.coerceAtLeast(1.0) / 32768.0) + 90.0).toFloat()
+
+    return dbSpl.coerceIn(0f, 120f)
+}
