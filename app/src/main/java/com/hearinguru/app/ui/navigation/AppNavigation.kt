@@ -151,7 +151,8 @@ fun AppNavigation(isDark: Boolean, onToggleTheme: () -> Unit) {
             composable(Screen.Tinnitus.route)       { TinnitusScreen() }
             composable(Screen.Learn.route) {
                 LearnScreen(
-                    onArticleClick = { index -> navController.navigate(Screen.ArticleDetail.route(index)) }
+                    onArticleClick = { index -> navController.navigate(Screen.ArticleDetail.route(index)) },
+                    onPathClick    = { pathIndex -> navController.navigate(Screen.LearningPath.route(pathIndex)) }
                 )
             }
             composable(Screen.HearingAids.route) {
@@ -165,7 +166,20 @@ fun AppNavigation(isDark: Boolean, onToggleTheme: () -> Unit) {
                 arguments = listOf(navArgument("index") { type = NavType.IntType })
             ) { backStackEntry ->
                 val index = backStackEntry.arguments?.getInt("index") ?: 0
-                ArticleDetailScreen(articleIndex = index)
+                ArticleDetailScreen(
+                    articleIndex   = index,
+                    onArticleClick = { navController.navigate(Screen.ArticleDetail.route(it)) }
+                )
+            }
+            composable(
+                route     = Screen.LearningPath.route,
+                arguments = listOf(navArgument("pathIndex") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val pathIndex = backStackEntry.arguments?.getInt("pathIndex") ?: 0
+                LearningPathScreen(
+                    pathIndex      = pathIndex,
+                    onArticleClick = { navController.navigate(Screen.ArticleDetail.route(it)) }
+                )
             }
         }
     }
