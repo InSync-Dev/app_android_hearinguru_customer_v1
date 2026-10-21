@@ -11,6 +11,7 @@ import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioRecord
 import android.media.AudioTrack
+import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.IBinder
@@ -18,6 +19,7 @@ import android.content.pm.ServiceInfo
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.hearinguru.app.MainActivity
+import com.hearinguru.app.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -97,6 +99,9 @@ class AudioService : Service() {
    private var tinnitusJob: Job? = null
    private var ampJob: Job? = null
 
+   // MediaPlayer used when ocean waves file is selected (soundIndex == 2)
+   private var oceanMediaPlayer: MediaPlayer? = null
+
    private lateinit var prefs: SharedPreferences
 
 
@@ -130,11 +135,27 @@ class AudioService : Service() {
 
    private fun handleStartTinnitus(soundIndex: Int, volume: Float) {
       tinnitusJob?.cancel()
+
+      // Release any previous ocean MediaPlayer before starting fresh
+      releaseOceanPlayer()
+
       _tinnitusPlaying.value = true
       _tinnitusSound.value   = soundIndex
       persistState(tinnitusOn = true, tinnitusSound = soundIndex)
       pushForegroundNotification()
 
+      // Ocean waves (index 2) — play the bundled file via MediaPlayer, looping
+      val isOceanSound = soundIndex == 2
+      if (isOceanSound) {
+         val player = MediaPlayer.create(this, R.raw.ocean_waves)
+         player.isLooping = true
+         player.setVolume(volume, volume)
+         player.start()
+         oceanMediaPlayer = player
+         return
+      }
+
+      // All other sounds — generate PCM samples in real time with AudioTrack
       tinnitusJob = serviceScope.launch {
          val sampleRate = 44100
          val bufSize    = sampleRate / 10
@@ -164,9 +185,17 @@ class AudioService : Service() {
    }
 
 
+   private fun releaseOceanPlayer() {
+      oceanMediaPlayer?.stop()
+      oceanMediaPlayer?.release()
+      oceanMediaPlayer = null
+   }
+
+
    private fun handleStopTinnitus() {
       tinnitusJob?.cancel()
-      tinnitusJob          = null
+      tinnitusJob = null
+      releaseOceanPlayer()
       _tinnitusPlaying.value = false
       persistState(tinnitusOn = false)
       notifyWidgets()
@@ -301,6 +330,7 @@ class AudioService : Service() {
 
    override fun onDestroy() {
       serviceScope.cancel()
+      releaseOceanPlayer()
       _tinnitusPlaying.value = false
       _ampOn.value           = false
       _ampDbLevel.value      = 0
