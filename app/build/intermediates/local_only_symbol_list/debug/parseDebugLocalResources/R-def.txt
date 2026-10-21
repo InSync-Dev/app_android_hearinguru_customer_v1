@@ -1,0 +1,10 @@
+R_DEF: Internal format may change without notice
+local
+drawable doctor
+drawable logo
+string amplifier_widget_description
+string app_name
+string tinnitus_widget_description
+style Theme.HearinGuru
+xml amplifier_widget_info
+xml tinnitus_widget_info

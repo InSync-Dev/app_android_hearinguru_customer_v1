@@ -1,0 +1,8 @@
+com.hearinguru.app-pngs-0 /Users/xydon/Desktop/HearinGuru/app/build/generated/res/pngs/debug
+com.hearinguru.app-updated_navigation_xml-1 /Users/xydon/Desktop/HearinGuru/app/build/generated/updated_navigation_xml/debug
+com.hearinguru.app-packageDebugResources-2 /Users/xydon/Desktop/HearinGuru/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.hearinguru.app-packageDebugResources-3 /Users/xydon/Desktop/HearinGuru/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.hearinguru.app-debug-4 /Users/xydon/Desktop/HearinGuru/app/build/intermediates/merged_res/debug/mergeDebugResources
+com.hearinguru.app-debug-5 /Users/xydon/Desktop/HearinGuru/app/src/debug/res
+com.hearinguru.app-main-6 /Users/xydon/Desktop/HearinGuru/app/src/main/res
+gradleHome-0 /Users/xydon/.gradle

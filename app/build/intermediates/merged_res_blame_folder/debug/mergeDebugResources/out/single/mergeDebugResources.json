@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.hearinguru.app-debug-50:/drawable_logo.xml.flat",
+        "source": "com.hearinguru.app-main-52:/drawable/logo.xml"
+    },
+    {
+        "merged": "com.hearinguru.app-debug-50:/drawable_doctor.png.flat",
+        "source": "com.hearinguru.app-main-52:/drawable/doctor.png"
+    },
+    {
+        "merged": "/Users/xydon/.gradle/daemon/9.4.1/com.hearinguru.app-debug-50:/xml_amplifier_widget_info.xml.flat",
+        "source": "/Users/xydon/.gradle/daemon/9.4.1/com.hearinguru.app-main-52:/xml/amplifier_widget_info.xml"
+    },
+    {
+        "merged": "/Users/xydon/.gradle/daemon/9.4.1/com.hearinguru.app-debug-50:/xml_tinnitus_widget_info.xml.flat",
+        "source": "/Users/xydon/.gradle/daemon/9.4.1/com.hearinguru.app-main-52:/xml/tinnitus_widget_info.xml"
+    }
+]

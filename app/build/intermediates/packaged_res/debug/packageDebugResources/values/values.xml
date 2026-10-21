@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="amplifier_widget_description">Toggle sound amplifier from your home screen</string>
+    <string name="app_name">HearinGuru</string>
+    <string name="tinnitus_widget_description">Play tinnitus relief sounds from your home screen</string>
+    <style name="Theme.HearinGuru" parent="android:Theme.Material.Light.NoActionBar"/>
+</resources>

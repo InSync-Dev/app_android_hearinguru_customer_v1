@@ -1,0 +1,782 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:2:1-59:12
+INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:2:1-59:12
+INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:2:1-59:12
+INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:2:1-59:12
+MERGED from [androidx.navigation:navigation-runtime-android:2.9.8] /Users/xydon/.gradle/caches/9.4.1/transforms/9237e73b4188ee3a0727cec7074df306/transformed/navigation-runtime-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-common-android:2.9.8] /Users/xydon/.gradle/caches/9.4.1/transforms/be166fdf31e2d5b242532d44e5f9d623/transformed/navigation-common-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.navigation:navigation-compose-android:2.9.8] /Users/xydon/.gradle/caches/9.4.1/transforms/93b06c4c76fc9888d9edbfb58669e96c/transformed/navigation-compose-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigationevent:navigationevent-android:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/19b9efd4470bbe0767f967a4883199eb/transformed/navigationevent/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.navigationevent:navigationevent-compose-android:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/5dfd9d0867a5c1a4451b64a485995655/transformed/navigationevent-compose/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material3:material3-android:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/b6a6d6a9e3ef02557656889edb6d3603/transformed/material3/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.glance:glance:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/c409a470318ac1353effe146b3a30325/transformed/glance-1.1.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:17:1-61:12
+MERGED from [androidx.compose.material:material-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/20467bbbe8148208ca3d51ce3a5b2b2a/transformed/material/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/aa5717380115c4fac61f93e29f91590b/transformed/foundation-layout/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-ripple-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/de4b778c9b77c4f1b0bbc9c1eb25b3c9/transformed/material-ripple/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.foundation:foundation-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/2a44e959e7de9f9b569fd012191ee3c8/transformed/foundation/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/024148874ffee49326a9f468286e15ca/transformed/animation/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.animation:animation-core-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/fff621ae4a81a640cf1da8c01ff6491e/transformed/animation-core/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/0048039e0de1e1b8752fc9fceb2e2678/transformed/ui-tooling-data/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-geometry-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/2cc517dd9843c12c74a5a427c1bea0f8/transformed/ui-geometry/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-util-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/48dbd5f1d0dfa20db5258383cafb68d1/transformed/ui-util/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-text-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/1ec0b115f66b681536d53354753fb28e/transformed/ui-text/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-unit-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/13b6459656451609b5c17224d67f7e27/transformed/ui-unit/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/113dc8a8d76547e4a2f723ec68013e91/transformed/ui-tooling-preview/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.compose.ui:ui-tooling-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/079fa8d44c52b2671a49b1b89e3cde71/transformed/ui-tooling/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.compose.ui:ui-graphics-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/d9eac2a87be6d1ad8ddc2a4789bc137b/transformed/ui-graphics/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.core:core-remoteviews:1.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/690cfda8e6105badfc385a1fea166e85/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.work:work-runtime-ktx:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/208ac300c0b7c0bf693f764263cb3169/transformed/work-runtime-ktx-2.7.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:17:1-145:12
+MERGED from [androidx.autofill:autofill:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/20b4ae1347dcc8d2ffac43eadaace24f/transformed/autofill-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.transition:transition:1.6.0] /Users/xydon/.gradle/caches/9.4.1/transforms/ff3cbaadc9a3f8fad3037a1a5f822a59/transformed/transition-1.6.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.window:window-core-android:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/9c2153d0e382baf3b60406ef869ee970/transformed/window-core/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.window:window:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e27eca6bdfb3f3e88c6814e0885b6d58/transformed/window-1.5.0/AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.graphics:graphics-path:1.0.1] /Users/xydon/.gradle/caches/9.4.1/transforms/adce77b4a1e81358b6600d4bb4c984a2/transformed/graphics-path-1.0.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/2a672993650d3c06bebfc853babd44fc/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c4e514e0e6e76ecee7be59c4b9a250a9/transformed/emoji2-1.4.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/047e80188d4834b84d36dc0ac9ce7eea/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/f73dc9668eeb5d8f6c3498cd7978cc08/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.compose.runtime:runtime-retain-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/e295e447d6e5c92d3016d131396273d0/transformed/runtime-retain/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-annotation-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/29f3a57a413d49096c8035246afc15d3/transformed/runtime-annotation/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c8b86c56bcc7176d23e273e398e756b0/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c2027505cf94d962ab78619e1f2674d7/transformed/lifecycle-livedata-core-ktx-2.10.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/be138869cd910c9925424dbb11ccc06d/transformed/lifecycle-livedata-core-2.10.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-service:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/7a2bbc3ba7c50134beb4fe15582a6695/transformed/lifecycle-service-2.10.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/51b4ef0ff88c67e6d9be96e7082e892d/transformed/lifecycle-livedata-2.10.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/b3a5f0b88a695551ae8ede81b82e1bfc/transformed/lifecycle-viewmodel-ktx-2.10.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/b672cc5c4fd548a43e37162cd0652a5d/transformed/lifecycle-viewmodel-2.10.0/AndroidManifest.xml:2:1-5:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/548cf6b12400ddf902c6f12d2584ddf2/transformed/lifecycle-viewmodel/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/090c045879741f93f2564cf48cc992ee/transformed/lifecycle-viewmodel-savedstate/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/cc7f6d9ba3033d8ead6ee9526ab21bdb/transformed/savedstate-ktx-1.4.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.savedstate:savedstate-android:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/daad1ef134f9a347d2d5e65235bde001/transformed/savedstate/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate-compose-android:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/934eaeb002121664d7fbc59947ce84ac/transformed/savedstate-compose/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/e52dcbd8fa62a5d8734c6e076a09a077/transformed/runtime/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/6ad07df412e26de02a609ad242b7a728/transformed/runtime-saveable/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/f4d01a85e92ae2b51fe0107f37f5935f/transformed/lifecycle-runtime-compose/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/bad09737aafce36384782944891e33fa/transformed/lifecycle-runtime/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/b1d93016990e9360b834dbd4cbeac4aa/transformed/lifecycle-runtime-ktx/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/22149bd5cdfecebb5ebe4b2bcfb7aefc/transformed/lifecycle-viewmodel-compose/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.8] /Users/xydon/.gradle/caches/9.4.1/transforms/83d615609e31ab2b6d905379fd4d131b/transformed/material-icons-extended-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.8] /Users/xydon/.gradle/caches/9.4.1/transforms/dd24698a665af2de6ca0cfe80689d561/transformed/material-icons-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.compose.ui:ui-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/f0997e9bf079c2eae516133432985613/transformed/ui/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity-ktx:1.13.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c5d93feb3c2ca5f1fc7e592bce297fef/transformed/activity-ktx-1.13.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity:1.13.0] /Users/xydon/.gradle/caches/9.4.1/transforms/dd28bc0d1207fbc3689fca005bf3cf19/transformed/activity-1.13.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.activity:activity-compose:1.13.0] /Users/xydon/.gradle/caches/9.4.1/transforms/bb566cd9e357c2ed629670a9aa89bc0d/transformed/activity-compose-1.13.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e3a350b32a7f781f0462657028a1e609/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
+MERGED from [androidx.core:core-ktx:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/f957b4a42b8e0ba3c9254ac342995448/transformed/core-ktx-1.18.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.datastore:datastore-preferences:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/498335a451168afb0ad20f1a749e6644/transformed/datastore-preferences-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.datastore:datastore:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/361a7db2ad79fcc233a8ca0849e3041c/transformed/datastore-1.0.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /Users/xydon/.gradle/caches/9.4.1/transforms/ba7fd725d595394c3af98d9561b60a61/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.core:core-viewtree:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/1bc0db881dd23f44ebf4b1b9d465f493/transformed/core-viewtree-1.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/300ab01ad709e6862fed45c21ca2d5fd/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/fa6b1fa7f3b269abffa8562dd3695d75/transformed/startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/xydon/.gradle/caches/9.4.1/transforms/d812857f1d723bc4b7f5aaf26b0bb945/transformed/tracing-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/a3d2dd4bf9fd00ce5b0378bff69ebabd/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.room:room-runtime:2.2.5] /Users/xydon/.gradle/caches/9.4.1/transforms/0079a53f0a7dc3c27459a82f552cd1e0/transformed/room-runtime-2.2.5/AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.sqlite:sqlite-framework:2.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/30d6a35af86bd46cf66fae3706f24e50/transformed/sqlite-framework-2.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.sqlite:sqlite:2.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/ed83b7dbdf25fa98a638b26935697980/transformed/sqlite-2.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e05bd7997be0cc428610dbaa3645bbf8/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/67f6a42646dfb4abe505ea025934d51c/transformed/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4aa099f493573e918b370b308c9f6f8a/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/fb9f23b14953bd1903b41138ef3608ac/transformed/print-1.0.0/AndroidManifest.xml:17:1-22:12
+	package
+		INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.RECORD_AUDIO
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:4:5-71
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:4:22-68
+uses-permission#android.permission.INTERNET
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:5:5-67
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:5:22-64
+uses-permission#android.permission.FOREGROUND_SERVICE
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:6:5-77
+MERGED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:28:5-77
+MERGED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:28:5-77
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:6:22-74
+uses-permission#android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:7:5-92
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:7:22-89
+uses-permission#android.permission.FOREGROUND_SERVICE_MICROPHONE
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:8:5-88
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:8:22-85
+uses-permission#android.permission.POST_NOTIFICATIONS
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:9:5-77
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:9:22-74
+application
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:11:5-57:19
+INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:11:5-57:19
+MERGED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:22:5-59:19
+MERGED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:22:5-59:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/079fa8d44c52b2671a49b1b89e3cde71/transformed/ui-tooling/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.compose.ui:ui-tooling-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/079fa8d44c52b2671a49b1b89e3cde71/transformed/ui-tooling/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.core:core-remoteviews:1.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/690cfda8e6105badfc385a1fea166e85/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:23:5-28:19
+MERGED from [androidx.core:core-remoteviews:1.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/690cfda8e6105badfc385a1fea166e85/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:23:5-28:19
+MERGED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:30:5-143:19
+MERGED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:30:5-143:19
+MERGED from [androidx.window:window:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e27eca6bdfb3f3e88c6814e0885b6d58/transformed/window-1.5.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.window:window:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e27eca6bdfb3f3e88c6814e0885b6d58/transformed/window-1.5.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c4e514e0e6e76ecee7be59c4b9a250a9/transformed/emoji2-1.4.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c4e514e0e6e76ecee7be59c4b9a250a9/transformed/emoji2-1.4.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:28:5-89
+MERGED from [androidx.lifecycle:lifecycle-process:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c8b86c56bcc7176d23e273e398e756b0/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c8b86c56bcc7176d23e273e398e756b0/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/fa6b1fa7f3b269abffa8562dd3695d75/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/fa6b1fa7f3b269abffa8562dd3695d75/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/a3d2dd4bf9fd00ce5b0378bff69ebabd/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/a3d2dd4bf9fd00ce5b0378bff69ebabd/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.room:room-runtime:2.2.5] /Users/xydon/.gradle/caches/9.4.1/transforms/0079a53f0a7dc3c27459a82f552cd1e0/transformed/room-runtime-2.2.5/AndroidManifest.xml:24:5-29:19
+MERGED from [androidx.room:room-runtime:2.2.5] /Users/xydon/.gradle/caches/9.4.1/transforms/0079a53f0a7dc3c27459a82f552cd1e0/transformed/room-runtime-2.2.5/AndroidManifest.xml:24:5-29:19
+	android:extractNativeLibs
+		INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:28:18-86
+	android:supportsRtl
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:15:9-35
+	android:label
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:13:9-35
+	android:allowBackup
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:12:9-35
+	android:theme
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:14:9-48
+activity#com.hearinguru.app.MainActivity
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:17:9-25:20
+	android:windowSoftInputMode
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:20:13-55
+	android:exported
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:19:13-36
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:18:13-41
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:21:13-24:29
+action#android.intent.action.MAIN
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:22:17-69
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:22:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:23:17-77
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:23:27-74
+service#com.hearinguru.app.service.AudioService
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:28:9-31:72
+	android:exported
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:30:13-37
+	android:foregroundServiceType
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:31:13-69
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:29:13-49
+receiver#com.hearinguru.app.widget.TinnitusWidgetReceiver
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:34:9-43:20
+	android:exported
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:36:13-36
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:35:13-58
+intent-filter#action:name:android.appwidget.action.APPWIDGET_UPDATE
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:37:13-39:29
+action#android.appwidget.action.APPWIDGET_UPDATE
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:38:17-84
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:38:25-81
+meta-data#android.appwidget.provider
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:40:13-42:64
+	android:resource
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:42:17-61
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:41:17-58
+receiver#com.hearinguru.app.widget.AmplifierWidgetReceiver
+ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:46:9-55:20
+	android:exported
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:48:13-36
+	android:name
+		ADDED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml:47:13-59
+uses-sdk
+INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml
+INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml
+MERGED from [androidx.navigation:navigation-runtime-android:2.9.8] /Users/xydon/.gradle/caches/9.4.1/transforms/9237e73b4188ee3a0727cec7074df306/transformed/navigation-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-runtime-android:2.9.8] /Users/xydon/.gradle/caches/9.4.1/transforms/9237e73b4188ee3a0727cec7074df306/transformed/navigation-runtime-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common-android:2.9.8] /Users/xydon/.gradle/caches/9.4.1/transforms/be166fdf31e2d5b242532d44e5f9d623/transformed/navigation-common-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-common-android:2.9.8] /Users/xydon/.gradle/caches/9.4.1/transforms/be166fdf31e2d5b242532d44e5f9d623/transformed/navigation-common-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.navigation:navigation-compose-android:2.9.8] /Users/xydon/.gradle/caches/9.4.1/transforms/93b06c4c76fc9888d9edbfb58669e96c/transformed/navigation-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigation:navigation-compose-android:2.9.8] /Users/xydon/.gradle/caches/9.4.1/transforms/93b06c4c76fc9888d9edbfb58669e96c/transformed/navigation-compose-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigationevent:navigationevent-android:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/19b9efd4470bbe0767f967a4883199eb/transformed/navigationevent/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigationevent:navigationevent-android:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/19b9efd4470bbe0767f967a4883199eb/transformed/navigationevent/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigationevent:navigationevent-compose-android:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/5dfd9d0867a5c1a4451b64a485995655/transformed/navigationevent-compose/AndroidManifest.xml:5:5-44
+MERGED from [androidx.navigationevent:navigationevent-compose-android:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/5dfd9d0867a5c1a4451b64a485995655/transformed/navigationevent-compose/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material3:material3-android:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/b6a6d6a9e3ef02557656889edb6d3603/transformed/material3/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material3:material3-android:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/b6a6d6a9e3ef02557656889edb6d3603/transformed/material3/AndroidManifest.xml:20:5-44
+MERGED from [androidx.glance:glance:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/c409a470318ac1353effe146b3a30325/transformed/glance-1.1.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.glance:glance:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/c409a470318ac1353effe146b3a30325/transformed/glance-1.1.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.material:material-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/20467bbbe8148208ca3d51ce3a5b2b2a/transformed/material/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/20467bbbe8148208ca3d51ce3a5b2b2a/transformed/material/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/aa5717380115c4fac61f93e29f91590b/transformed/foundation-layout/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-layout-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/aa5717380115c4fac61f93e29f91590b/transformed/foundation-layout/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/de4b778c9b77c4f1b0bbc9c1eb25b3c9/transformed/material-ripple/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-ripple-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/de4b778c9b77c4f1b0bbc9c1eb25b3c9/transformed/material-ripple/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/2a44e959e7de9f9b569fd012191ee3c8/transformed/foundation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.foundation:foundation-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/2a44e959e7de9f9b569fd012191ee3c8/transformed/foundation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/024148874ffee49326a9f468286e15ca/transformed/animation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/024148874ffee49326a9f468286e15ca/transformed/animation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/fff621ae4a81a640cf1da8c01ff6491e/transformed/animation-core/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.animation:animation-core-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/fff621ae4a81a640cf1da8c01ff6491e/transformed/animation-core/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/0048039e0de1e1b8752fc9fceb2e2678/transformed/ui-tooling-data/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-data-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/0048039e0de1e1b8752fc9fceb2e2678/transformed/ui-tooling-data/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/2cc517dd9843c12c74a5a427c1bea0f8/transformed/ui-geometry/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-geometry-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/2cc517dd9843c12c74a5a427c1bea0f8/transformed/ui-geometry/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/48dbd5f1d0dfa20db5258383cafb68d1/transformed/ui-util/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-util-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/48dbd5f1d0dfa20db5258383cafb68d1/transformed/ui-util/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/1ec0b115f66b681536d53354753fb28e/transformed/ui-text/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-text-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/1ec0b115f66b681536d53354753fb28e/transformed/ui-text/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/13b6459656451609b5c17224d67f7e27/transformed/ui-unit/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-unit-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/13b6459656451609b5c17224d67f7e27/transformed/ui-unit/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/113dc8a8d76547e4a2f723ec68013e91/transformed/ui-tooling-preview/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-preview-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/113dc8a8d76547e4a2f723ec68013e91/transformed/ui-tooling-preview/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/079fa8d44c52b2671a49b1b89e3cde71/transformed/ui-tooling/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-tooling-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/079fa8d44c52b2671a49b1b89e3cde71/transformed/ui-tooling/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/d9eac2a87be6d1ad8ddc2a4789bc137b/transformed/ui-graphics/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-graphics-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/d9eac2a87be6d1ad8ddc2a4789bc137b/transformed/ui-graphics/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-remoteviews:1.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/690cfda8e6105badfc385a1fea166e85/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.core:core-remoteviews:1.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/690cfda8e6105badfc385a1fea166e85/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.work:work-runtime-ktx:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/208ac300c0b7c0bf693f764263cb3169/transformed/work-runtime-ktx-2.7.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.work:work-runtime-ktx:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/208ac300c0b7c0bf693f764263cb3169/transformed/work-runtime-ktx-2.7.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.autofill:autofill:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/20b4ae1347dcc8d2ffac43eadaace24f/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.autofill:autofill:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/20b4ae1347dcc8d2ffac43eadaace24f/transformed/autofill-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.6.0] /Users/xydon/.gradle/caches/9.4.1/transforms/ff3cbaadc9a3f8fad3037a1a5f822a59/transformed/transition-1.6.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.transition:transition:1.6.0] /Users/xydon/.gradle/caches/9.4.1/transforms/ff3cbaadc9a3f8fad3037a1a5f822a59/transformed/transition-1.6.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window:window-core-android:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/9c2153d0e382baf3b60406ef869ee970/transformed/window-core/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window:window-core-android:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/9c2153d0e382baf3b60406ef869ee970/transformed/window-core/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window:window:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e27eca6bdfb3f3e88c6814e0885b6d58/transformed/window-1.5.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e27eca6bdfb3f3e88c6814e0885b6d58/transformed/window-1.5.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.graphics:graphics-path:1.0.1] /Users/xydon/.gradle/caches/9.4.1/transforms/adce77b4a1e81358b6600d4bb4c984a2/transformed/graphics-path-1.0.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.graphics:graphics-path:1.0.1] /Users/xydon/.gradle/caches/9.4.1/transforms/adce77b4a1e81358b6600d4bb4c984a2/transformed/graphics-path-1.0.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/2a672993650d3c06bebfc853babd44fc/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/2a672993650d3c06bebfc853babd44fc/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c4e514e0e6e76ecee7be59c4b9a250a9/transformed/emoji2-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c4e514e0e6e76ecee7be59c4b9a250a9/transformed/emoji2-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/047e80188d4834b84d36dc0ac9ce7eea/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/047e80188d4834b84d36dc0ac9ce7eea/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/f73dc9668eeb5d8f6c3498cd7978cc08/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/f73dc9668eeb5d8f6c3498cd7978cc08/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.compose.runtime:runtime-retain-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/e295e447d6e5c92d3016d131396273d0/transformed/runtime-retain/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-retain-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/e295e447d6e5c92d3016d131396273d0/transformed/runtime-retain/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-annotation-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/29f3a57a413d49096c8035246afc15d3/transformed/runtime-annotation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-annotation-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/29f3a57a413d49096c8035246afc15d3/transformed/runtime-annotation/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c8b86c56bcc7176d23e273e398e756b0/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c8b86c56bcc7176d23e273e398e756b0/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c2027505cf94d962ab78619e1f2674d7/transformed/lifecycle-livedata-core-ktx-2.10.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c2027505cf94d962ab78619e1f2674d7/transformed/lifecycle-livedata-core-ktx-2.10.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/be138869cd910c9925424dbb11ccc06d/transformed/lifecycle-livedata-core-2.10.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/be138869cd910c9925424dbb11ccc06d/transformed/lifecycle-livedata-core-2.10.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-service:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/7a2bbc3ba7c50134beb4fe15582a6695/transformed/lifecycle-service-2.10.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-service:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/7a2bbc3ba7c50134beb4fe15582a6695/transformed/lifecycle-service-2.10.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/51b4ef0ff88c67e6d9be96e7082e892d/transformed/lifecycle-livedata-2.10.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/51b4ef0ff88c67e6d9be96e7082e892d/transformed/lifecycle-livedata-2.10.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/b3a5f0b88a695551ae8ede81b82e1bfc/transformed/lifecycle-viewmodel-ktx-2.10.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/b3a5f0b88a695551ae8ede81b82e1bfc/transformed/lifecycle-viewmodel-ktx-2.10.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/b672cc5c4fd548a43e37162cd0652a5d/transformed/lifecycle-viewmodel-2.10.0/AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/b672cc5c4fd548a43e37162cd0652a5d/transformed/lifecycle-viewmodel-2.10.0/AndroidManifest.xml:4:5-43
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/548cf6b12400ddf902c6f12d2584ddf2/transformed/lifecycle-viewmodel/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/548cf6b12400ddf902c6f12d2584ddf2/transformed/lifecycle-viewmodel/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/090c045879741f93f2564cf48cc992ee/transformed/lifecycle-viewmodel-savedstate/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/090c045879741f93f2564cf48cc992ee/transformed/lifecycle-viewmodel-savedstate/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/cc7f6d9ba3033d8ead6ee9526ab21bdb/transformed/savedstate-ktx-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/cc7f6d9ba3033d8ead6ee9526ab21bdb/transformed/savedstate-ktx-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate-android:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/daad1ef134f9a347d2d5e65235bde001/transformed/savedstate/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-android:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/daad1ef134f9a347d2d5e65235bde001/transformed/savedstate/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-compose-android:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/934eaeb002121664d7fbc59947ce84ac/transformed/savedstate-compose/AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate-compose-android:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/934eaeb002121664d7fbc59947ce84ac/transformed/savedstate-compose/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/e52dcbd8fa62a5d8734c6e076a09a077/transformed/runtime/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/e52dcbd8fa62a5d8734c6e076a09a077/transformed/runtime/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/6ad07df412e26de02a609ad242b7a728/transformed/runtime-saveable/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.runtime:runtime-saveable-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/6ad07df412e26de02a609ad242b7a728/transformed/runtime-saveable/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/f4d01a85e92ae2b51fe0107f37f5935f/transformed/lifecycle-runtime-compose/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-compose-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/f4d01a85e92ae2b51fe0107f37f5935f/transformed/lifecycle-runtime-compose/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/bad09737aafce36384782944891e33fa/transformed/lifecycle-runtime/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/bad09737aafce36384782944891e33fa/transformed/lifecycle-runtime/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/b1d93016990e9360b834dbd4cbeac4aa/transformed/lifecycle-runtime-ktx/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/b1d93016990e9360b834dbd4cbeac4aa/transformed/lifecycle-runtime-ktx/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/22149bd5cdfecebb5ebe4b2bcfb7aefc/transformed/lifecycle-viewmodel-compose/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-compose-android:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/22149bd5cdfecebb5ebe4b2bcfb7aefc/transformed/lifecycle-viewmodel-compose/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.8] /Users/xydon/.gradle/caches/9.4.1/transforms/83d615609e31ab2b6d905379fd4d131b/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-extended-android:1.7.8] /Users/xydon/.gradle/caches/9.4.1/transforms/83d615609e31ab2b6d905379fd4d131b/transformed/material-icons-extended-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.8] /Users/xydon/.gradle/caches/9.4.1/transforms/dd24698a665af2de6ca0cfe80689d561/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.material:material-icons-core-android:1.7.8] /Users/xydon/.gradle/caches/9.4.1/transforms/dd24698a665af2de6ca0cfe80689d561/transformed/material-icons-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/f0997e9bf079c2eae516133432985613/transformed/ui/AndroidManifest.xml:5:5-44
+MERGED from [androidx.compose.ui:ui-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/f0997e9bf079c2eae516133432985613/transformed/ui/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.13.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c5d93feb3c2ca5f1fc7e592bce297fef/transformed/activity-ktx-1.13.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.13.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c5d93feb3c2ca5f1fc7e592bce297fef/transformed/activity-ktx-1.13.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity:1.13.0] /Users/xydon/.gradle/caches/9.4.1/transforms/dd28bc0d1207fbc3689fca005bf3cf19/transformed/activity-1.13.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.13.0] /Users/xydon/.gradle/caches/9.4.1/transforms/dd28bc0d1207fbc3689fca005bf3cf19/transformed/activity-1.13.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity-compose:1.13.0] /Users/xydon/.gradle/caches/9.4.1/transforms/bb566cd9e357c2ed629670a9aa89bc0d/transformed/activity-compose-1.13.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-compose:1.13.0] /Users/xydon/.gradle/caches/9.4.1/transforms/bb566cd9e357c2ed629670a9aa89bc0d/transformed/activity-compose-1.13.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e3a350b32a7f781f0462657028a1e609/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e3a350b32a7f781f0462657028a1e609/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
+MERGED from [androidx.core:core-ktx:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/f957b4a42b8e0ba3c9254ac342995448/transformed/core-ktx-1.18.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/f957b4a42b8e0ba3c9254ac342995448/transformed/core-ktx-1.18.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.datastore:datastore-preferences:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/498335a451168afb0ad20f1a749e6644/transformed/datastore-preferences-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.datastore:datastore-preferences:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/498335a451168afb0ad20f1a749e6644/transformed/datastore-preferences-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.datastore:datastore:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/361a7db2ad79fcc233a8ca0849e3041c/transformed/datastore-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.datastore:datastore:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/361a7db2ad79fcc233a8ca0849e3041c/transformed/datastore-1.0.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /Users/xydon/.gradle/caches/9.4.1/transforms/ba7fd725d595394c3af98d9561b60a61/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.1] /Users/xydon/.gradle/caches/9.4.1/transforms/ba7fd725d595394c3af98d9561b60a61/transformed/annotation-experimental-1.4.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-viewtree:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/1bc0db881dd23f44ebf4b1b9d465f493/transformed/core-viewtree-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-viewtree:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/1bc0db881dd23f44ebf4b1b9d465f493/transformed/core-viewtree-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/300ab01ad709e6862fed45c21ca2d5fd/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/300ab01ad709e6862fed45c21ca2d5fd/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/fa6b1fa7f3b269abffa8562dd3695d75/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/fa6b1fa7f3b269abffa8562dd3695d75/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/xydon/.gradle/caches/9.4.1/transforms/d812857f1d723bc4b7f5aaf26b0bb945/transformed/tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/xydon/.gradle/caches/9.4.1/transforms/d812857f1d723bc4b7f5aaf26b0bb945/transformed/tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/a3d2dd4bf9fd00ce5b0378bff69ebabd/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/a3d2dd4bf9fd00ce5b0378bff69ebabd/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.room:room-runtime:2.2.5] /Users/xydon/.gradle/caches/9.4.1/transforms/0079a53f0a7dc3c27459a82f552cd1e0/transformed/room-runtime-2.2.5/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.room:room-runtime:2.2.5] /Users/xydon/.gradle/caches/9.4.1/transforms/0079a53f0a7dc3c27459a82f552cd1e0/transformed/room-runtime-2.2.5/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.sqlite:sqlite-framework:2.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/30d6a35af86bd46cf66fae3706f24e50/transformed/sqlite-framework-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.sqlite:sqlite-framework:2.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/30d6a35af86bd46cf66fae3706f24e50/transformed/sqlite-framework-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.sqlite:sqlite:2.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/ed83b7dbdf25fa98a638b26935697980/transformed/sqlite-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.sqlite:sqlite:2.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/ed83b7dbdf25fa98a638b26935697980/transformed/sqlite-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e05bd7997be0cc428610dbaa3645bbf8/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e05bd7997be0cc428610dbaa3645bbf8/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/67f6a42646dfb4abe505ea025934d51c/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/67f6a42646dfb4abe505ea025934d51c/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4aa099f493573e918b370b308c9f6f8a/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4aa099f493573e918b370b308c9f6f8a/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/fb9f23b14953bd1903b41138ef3608ac/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/xydon/.gradle/caches/9.4.1/transforms/fb9f23b14953bd1903b41138ef3608ac/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+	android:targetSdkVersion
+		INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/xydon/Desktop/HearinGuru/app/src/main/AndroidManifest.xml
+activity#androidx.glance.appwidget.action.ActionTrampolineActivity
+ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:23:9-28:62
+	android:enabled
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:25:13-35
+	android:excludeFromRecents
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:26:13-46
+	android:exported
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:27:13-37
+	android:theme
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:28:13-59
+	android:name
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:24:13-85
+activity#androidx.glance.appwidget.action.InvisibleActionTrampolineActivity
+ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:29:9-36:81
+	android:enabled
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:31:13-35
+	android:launchMode
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:33:13-48
+	android:noHistory
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:34:13-37
+	android:exported
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:32:13-37
+	android:theme
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:36:13-78
+	android:taskAffinity
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:35:13-91
+	android:name
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:30:13-94
+receiver#androidx.glance.appwidget.action.ActionCallbackBroadcastReceiver
+ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:38:9-41:40
+	android:enabled
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:40:13-35
+	android:exported
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:41:13-37
+	android:name
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:39:13-92
+receiver#androidx.glance.appwidget.UnmanagedSessionReceiver
+ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:42:9-45:40
+	android:enabled
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:44:13-35
+	android:exported
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:45:13-37
+	android:name
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:43:13-78
+receiver#androidx.glance.appwidget.MyPackageReplacedReceiver
+ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:46:9-53:20
+	android:enabled
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:48:13-35
+	android:exported
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:49:13-37
+	android:name
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:47:13-79
+intent-filter#action:name:android.intent.action.MY_PACKAGE_REPLACED
+ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:50:13-52:29
+action#android.intent.action.MY_PACKAGE_REPLACED
+ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:51:17-84
+	android:name
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:51:25-81
+service#androidx.glance.appwidget.GlanceRemoteViewsService
+ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:55:9-58:72
+	android:exported
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:57:13-36
+	android:permission
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:58:13-69
+	android:name
+		ADDED from [androidx.glance:glance-appwidget:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/7be43615174341b15d11bd89733d641c/transformed/glance-appwidget-1.1.1/AndroidManifest.xml:56:13-78
+activity#androidx.compose.ui.tooling.PreviewActivity
+ADDED from [androidx.compose.ui:ui-tooling-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/079fa8d44c52b2671a49b1b89e3cde71/transformed/ui-tooling/AndroidManifest.xml:23:9-25:39
+	android:exported
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/079fa8d44c52b2671a49b1b89e3cde71/transformed/ui-tooling/AndroidManifest.xml:25:13-36
+	android:name
+		ADDED from [androidx.compose.ui:ui-tooling-android:1.10.4] /Users/xydon/.gradle/caches/9.4.1/transforms/079fa8d44c52b2671a49b1b89e3cde71/transformed/ui-tooling/AndroidManifest.xml:24:13-71
+service#androidx.core.widget.RemoteViewsCompatService
+ADDED from [androidx.core:core-remoteviews:1.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/690cfda8e6105badfc385a1fea166e85/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:24:9-27:63
+	tools:ignore
+		ADDED from [androidx.core:core-remoteviews:1.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/690cfda8e6105badfc385a1fea166e85/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:27:13-60
+	android:permission
+		ADDED from [androidx.core:core-remoteviews:1.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/690cfda8e6105badfc385a1fea166e85/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:26:13-69
+	android:name
+		ADDED from [androidx.core:core-remoteviews:1.1.0] /Users/xydon/.gradle/caches/9.4.1/transforms/690cfda8e6105badfc385a1fea166e85/transformed/core-remoteviews-1.1.0/AndroidManifest.xml:25:13-73
+uses-permission#android.permission.WAKE_LOCK
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:25:5-68
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:25:22-65
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:26:5-79
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:26:22-76
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:27:5-81
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:27:22-78
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:31:9-39:20
+MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c4e514e0e6e76ecee7be59c4b9a250a9/transformed/emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.emoji2:emoji2:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c4e514e0e6e76ecee7be59c4b9a250a9/transformed/emoji2-1.4.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c8b86c56bcc7176d23e273e398e756b0/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c8b86c56bcc7176d23e273e398e756b0/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/fa6b1fa7f3b269abffa8562dd3695d75/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/xydon/.gradle/caches/9.4.1/transforms/fa6b1fa7f3b269abffa8562dd3695d75/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:35:13-31
+	android:authorities
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:33:13-68
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:34:13-37
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:32:13-67
+meta-data#androidx.work.WorkManagerInitializer
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:36:13-38:52
+	android:value
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:38:17-49
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:37:17-68
+service#androidx.work.impl.background.systemalarm.SystemAlarmService
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:41:9-46:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:44:13-72
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:45:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:46:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:43:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:42:13-88
+service#androidx.work.impl.background.systemjob.SystemJobService
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:47:9-53:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:50:13-70
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:51:13-36
+	android:permission
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:52:13-69
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:53:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:49:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:48:13-84
+service#androidx.work.impl.foreground.SystemForegroundService
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:54:9-59:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:57:13-77
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:58:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:59:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:56:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:55:13-81
+receiver#androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:61:9-66:35
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:64:13-35
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:65:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:66:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:63:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:62:13-88
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:67:9-77:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:70:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:71:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:72:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:69:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:68:13-106
+intent-filter#action:name:android.intent.action.ACTION_POWER_CONNECTED+action:name:android.intent.action.ACTION_POWER_DISCONNECTED
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:73:13-76:29
+action#android.intent.action.ACTION_POWER_CONNECTED
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:74:17-87
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:74:25-84
+action#android.intent.action.ACTION_POWER_DISCONNECTED
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:75:17-90
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:75:25-87
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:78:9-88:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:81:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:82:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:83:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:80:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:79:13-104
+intent-filter#action:name:android.intent.action.BATTERY_LOW+action:name:android.intent.action.BATTERY_OKAY
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:84:13-87:29
+action#android.intent.action.BATTERY_OKAY
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:85:17-77
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:85:25-74
+action#android.intent.action.BATTERY_LOW
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:86:17-76
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:86:25-73
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:89:9-99:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:92:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:93:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:94:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:91:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:90:13-104
+intent-filter#action:name:android.intent.action.DEVICE_STORAGE_LOW+action:name:android.intent.action.DEVICE_STORAGE_OK
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:95:13-98:29
+action#android.intent.action.DEVICE_STORAGE_LOW
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:96:17-83
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:96:25-80
+action#android.intent.action.DEVICE_STORAGE_OK
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:97:17-82
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:97:25-79
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:100:9-109:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:103:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:104:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:105:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:102:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:101:13-103
+intent-filter#action:name:android.net.conn.CONNECTIVITY_CHANGE
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:106:13-108:29
+action#android.net.conn.CONNECTIVITY_CHANGE
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:107:17-79
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:107:25-76
+receiver#androidx.work.impl.background.systemalarm.RescheduleReceiver
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:110:9-121:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:113:13-36
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:114:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:115:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:112:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:111:13-88
+intent-filter#action:name:android.intent.action.BOOT_COMPLETED+action:name:android.intent.action.TIMEZONE_CHANGED+action:name:android.intent.action.TIME_SET
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:116:13-120:29
+action#android.intent.action.BOOT_COMPLETED
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:117:17-79
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:117:25-76
+action#android.intent.action.TIME_SET
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:118:17-73
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:118:25-70
+action#android.intent.action.TIMEZONE_CHANGED
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:119:17-81
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:119:25-78
+receiver#androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:122:9-131:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:125:13-72
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:126:13-37
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:127:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:124:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:123:13-99
+intent-filter#action:name:androidx.work.impl.background.systemalarm.UpdateProxies
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:128:13-130:29
+action#androidx.work.impl.background.systemalarm.UpdateProxies
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:129:17-98
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:129:25-95
+receiver#androidx.work.impl.diagnostics.DiagnosticsReceiver
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:132:9-142:20
+	android:enabled
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:135:13-35
+	android:exported
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:136:13-36
+	android:permission
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:137:13-57
+	tools:targetApi
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:138:13-32
+	android:directBootAware
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:134:13-44
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:133:13-78
+intent-filter#action:name:androidx.work.diagnostics.REQUEST_DIAGNOSTICS
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:139:13-141:29
+action#androidx.work.diagnostics.REQUEST_DIAGNOSTICS
+ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:140:17-88
+	android:name
+		ADDED from [androidx.work:work-runtime:2.7.1] /Users/xydon/.gradle/caches/9.4.1/transforms/b681a6533f9d18e3faa1a2c57c2ed7ce/transformed/work-runtime-2.7.1/AndroidManifest.xml:140:25-85
+uses-library#androidx.window.extensions
+ADDED from [androidx.window:window:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e27eca6bdfb3f3e88c6814e0885b6d58/transformed/window-1.5.0/AndroidManifest.xml:23:9-25:40
+	android:required
+		ADDED from [androidx.window:window:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e27eca6bdfb3f3e88c6814e0885b6d58/transformed/window-1.5.0/AndroidManifest.xml:25:13-37
+	android:name
+		ADDED from [androidx.window:window:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e27eca6bdfb3f3e88c6814e0885b6d58/transformed/window-1.5.0/AndroidManifest.xml:24:13-54
+uses-library#androidx.window.sidecar
+ADDED from [androidx.window:window:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e27eca6bdfb3f3e88c6814e0885b6d58/transformed/window-1.5.0/AndroidManifest.xml:26:9-28:40
+	android:required
+		ADDED from [androidx.window:window:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e27eca6bdfb3f3e88c6814e0885b6d58/transformed/window-1.5.0/AndroidManifest.xml:28:13-37
+	android:name
+		ADDED from [androidx.window:window:1.5.0] /Users/xydon/.gradle/caches/9.4.1/transforms/e27eca6bdfb3f3e88c6814e0885b6d58/transformed/window-1.5.0/AndroidManifest.xml:27:13-51
+meta-data#androidx.emoji2.text.EmojiCompatInitializer
+ADDED from [androidx.emoji2:emoji2:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c4e514e0e6e76ecee7be59c4b9a250a9/transformed/emoji2-1.4.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c4e514e0e6e76ecee7be59c4b9a250a9/transformed/emoji2-1.4.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.emoji2:emoji2:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c4e514e0e6e76ecee7be59c4b9a250a9/transformed/emoji2-1.4.0/AndroidManifest.xml:30:17-75
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:23:9-81
+permission#com.hearinguru.app.debug.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:26:22-94
+uses-permission#com.hearinguru.app.debug.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.18.0] /Users/xydon/.gradle/caches/9.4.1/transforms/4bc4987a605614ced64cf5e6760daf57/transformed/core-1.18.0/AndroidManifest.xml:26:22-94
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c8b86c56bcc7176d23e273e398e756b0/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c8b86c56bcc7176d23e273e398e756b0/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.10.0] /Users/xydon/.gradle/caches/9.4.1/transforms/c8b86c56bcc7176d23e273e398e756b0/transformed/lifecycle-process-2.10.0/AndroidManifest.xml:30:17-78
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.4.0] /Users/xydon/.gradle/caches/9.4.1/transforms/0cd6995981edd7e5c0c32ef60d92bc5a/transformed/profileinstaller-1.4.0/AndroidManifest.xml:50:25-92
+service#androidx.room.MultiInstanceInvalidationService
+ADDED from [androidx.room:room-runtime:2.2.5] /Users/xydon/.gradle/caches/9.4.1/transforms/0079a53f0a7dc3c27459a82f552cd1e0/transformed/room-runtime-2.2.5/AndroidManifest.xml:25:9-28:40
+	android:exported
+		ADDED from [androidx.room:room-runtime:2.2.5] /Users/xydon/.gradle/caches/9.4.1/transforms/0079a53f0a7dc3c27459a82f552cd1e0/transformed/room-runtime-2.2.5/AndroidManifest.xml:28:13-37
+	android:directBootAware
+		ADDED from [androidx.room:room-runtime:2.2.5] /Users/xydon/.gradle/caches/9.4.1/transforms/0079a53f0a7dc3c27459a82f552cd1e0/transformed/room-runtime-2.2.5/AndroidManifest.xml:27:13-43
+	android:name
+		ADDED from [androidx.room:room-runtime:2.2.5] /Users/xydon/.gradle/caches/9.4.1/transforms/0079a53f0a7dc3c27459a82f552cd1e0/transformed/room-runtime-2.2.5/AndroidManifest.xml:26:13-74
