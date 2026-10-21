@@ -7,6 +7,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -56,6 +57,9 @@ private data class SessionState(
 
     val step: TestStep = TestStep.INTRO,
 
+    // Language preference
+    val selectedLanguage: AppLanguage = SUPPORTED_LANGUAGES.first(),
+
     // Consent + demographics
     val ageGroup: String = "",
     val consentGiven: Boolean = false,
@@ -99,6 +103,34 @@ private const val MIN_VALID_RESPONSE_MS = 200L   // <200ms = likely false positi
 private val AGE_GROUPS = listOf("Under 18", "18–40", "41–60", "61–80", "Over 80")
 
 
+// ─── Language support (placeholder — translations not yet implemented) ─────────
+
+private data class AppLanguage(
+    val code: String,       // BCP-47 code
+    val name: String,       // English name
+    val nativeName: String, // Name in the script of that language
+    val flag: String        // Emoji flag
+)
+
+private val SUPPORTED_LANGUAGES = listOf(
+    AppLanguage("en",    "English",   "English",    "🇬🇧"),
+    AppLanguage("hi",    "Hindi",     "हिंदी",       "🇮🇳"),
+    AppLanguage("es",    "Spanish",   "Español",     "🇪🇸"),
+    AppLanguage("de",    "German",    "Deutsch",     "🇩🇪"),
+    AppLanguage("ta",    "Tamil",     "தமிழ்",       "🇮🇳"),
+    AppLanguage("te",    "Telugu",    "తెలుగు",      "🇮🇳"),
+    AppLanguage("mr",    "Marathi",   "मराठी",       "🇮🇳"),
+    AppLanguage("bn",    "Bengali",   "বাংলা",       "🇮🇳"),
+    AppLanguage("kn",    "Kannada",   "ಕನ್ನಡ",       "🇮🇳"),
+    AppLanguage("ml",    "Malayalam", "മലയാളം",      "🇮🇳"),
+    AppLanguage("gu",    "Gujarati",  "ગુજરાતી",     "🇮🇳"),
+    AppLanguage("pa",    "Punjabi",   "ਪੰਜਾਬੀ",      "🇮🇳"),
+    AppLanguage("or",    "Odia",      "ଓଡ଼ିଆ",       "🇮🇳"),
+    AppLanguage("ur",    "Urdu",      "اردو",        "🇵🇰"),
+    AppLanguage("as",    "Assamese",  "অসমীয়া",     "🇮🇳")
+)
+
+
 // ─── Entry point ─────────────────────────────────────────────────────────────
 
 @Composable
@@ -112,7 +144,9 @@ fun HearingTestScreen(
     AnimatedContent(targetState = session.step, label = "step") { step ->
         when (step) {
             TestStep.INTRO -> IntroStep(
-                onNext = { session = session.copy(step = TestStep.CONSENT) }
+                session  = session,
+                onChange = { session = it },
+                onNext   = { session = session.copy(step = TestStep.CONSENT) }
             )
             TestStep.CONSENT -> ConsentStep(
                 session  = session,
@@ -198,13 +232,93 @@ fun HearingTestScreen(
 // ─── Step 1: Intro ────────────────────────────────────────────────────────────
 
 @Composable
-private fun IntroStep(onNext: () -> Unit) {
+private fun IntroStep(
+    session: SessionState,
+    onChange: (SessionState) -> Unit,
+    onNext: () -> Unit
+) {
+    var showLanguageDialog by remember { mutableStateOf(false) }
+
+    // Language picker dialog
+    if (showLanguageDialog) {
+        AlertDialog(
+            onDismissRequest = { showLanguageDialog = false },
+            title = {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Language, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(22.dp))
+                    Text("Select language", fontWeight = FontWeight.Bold)
+                }
+            },
+            text = {
+                Column(Modifier.verticalScroll(rememberScrollState())) {
+                    // Coming soon notice
+                    Surface(shape = RoundedCornerShape(8.dp), color = MaterialTheme.colorScheme.secondaryContainer) {
+                        Row(Modifier.padding(10.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.Info, null, tint = MaterialTheme.colorScheme.onSecondaryContainer, modifier = Modifier.size(14.dp))
+                            Text("Translations coming soon. English is the only active language.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer, lineHeight = 16.sp)
+                        }
+                    }
+                    Spacer(Modifier.height(12.dp))
+                    SUPPORTED_LANGUAGES.forEach { lang ->
+                        val isSelected = session.selectedLanguage.code == lang.code
+                        val isAvailable = lang.code == "en"
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent)
+                                .selectable(selected = isSelected, onClick = {
+                                    onChange(session.copy(selectedLanguage = lang))
+                                    showLanguageDialog = false
+                                })
+                                .padding(horizontal = 12.dp, vertical = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(lang.flag, fontSize = 22.sp)
+                            Column(Modifier.weight(1f)) {
+                                Text(lang.nativeName, style = MaterialTheme.typography.bodyLarge, fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal, color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface)
+                                Text(lang.name, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            }
+                            if (!isAvailable) {
+                                Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.surfaceContainerHigh) {
+                                    Text("Soon", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp))
+                                }
+                            }
+                            if (isSelected) Icon(Icons.Default.CheckCircle, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showLanguageDialog = false }) { Text("Close") }
+            }
+        )
+    }
+
     Column(
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(20.dp)
     ) {
+        // Language selector bar
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+            OutlinedButton(
+                onClick = { showLanguageDialog = true },
+                shape = RoundedCornerShape(50),
+                modifier = Modifier.height(38.dp),
+                contentPadding = PaddingValues(horizontal = 14.dp, vertical = 0.dp)
+            ) {
+                Text(session.selectedLanguage.flag, fontSize = 16.sp)
+                Spacer(Modifier.width(6.dp))
+                Text(session.selectedLanguage.nativeName, style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.width(4.dp))
+                Icon(Icons.Default.ExpandMore, null, modifier = Modifier.size(16.dp))
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+
         Box(
             Modifier
                 .size(72.dp)
