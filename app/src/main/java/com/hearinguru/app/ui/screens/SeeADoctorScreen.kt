@@ -23,10 +23,49 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hearinguru.app.R
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import java.net.HttpURLConnection
+import java.net.URL
 
 
 private const val HEARINGURU_WHATSAPP = "918886111694"
 private const val HEARINGURU_PHONE    = "+918886111694"
+
+// Callback requests are emailed via FormSubmit (first request triggers a one-time activation email)
+private const val FORM_SUBMIT_URL = "https://formsubmit.co/ajax/kishanmalviya794@gmail.com"
+
+
+/** Posts the callback request to FormSubmit. Returns true when the server accepted it. */
+private suspend fun sendCallbackRequest(name: String, phone: String, concern: String): Boolean =
+    withContext(Dispatchers.IO) {
+        runCatching {
+            val body = JSONObject().apply {
+                put("_subject", "HearinGuru callback request — $name")
+                put("_template", "table")
+                put("Name", name)
+                put("Phone", phone)
+                put("Concern", concern.ifBlank { "-" })
+            }.toString()
+
+            val connection = (URL(FORM_SUBMIT_URL).openConnection() as HttpURLConnection).apply {
+                requestMethod  = "POST"
+                connectTimeout = 15_000
+                readTimeout    = 15_000
+                doOutput       = true
+                setRequestProperty("Content-Type", "application/json")
+                setRequestProperty("Accept", "application/json")
+            }
+            try {
+                connection.outputStream.use { it.write(body.toByteArray()) }
+                connection.responseCode in 200..299
+            } finally {
+                connection.disconnect()
+            }
+        }.getOrDefault(false)
+    }
 
 
 @Composable
@@ -147,6 +186,10 @@ private fun ContactForm() {
     var phone     by remember { mutableStateOf("") }
     var concern   by remember { mutableStateOf("") }
     var submitted by remember { mutableStateOf(false) }
+    var sending   by remember { mutableStateOf(false) }
+    var sendError by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val canSubmit = name.isNotBlank() && phone.isNotBlank() && !sending
 
     Column(Modifier.padding(horizontal = 16.dp)) {
         Text(
@@ -214,16 +257,38 @@ private fun ContactForm() {
                 maxLines      = 5,
                 shape         = RoundedCornerShape(12.dp)
             )
+            if (sendError) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    "Couldn't send your request. Check your internet connection and try again.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
             Spacer(Modifier.height(16.dp))
             Button(
-                onClick  = { if (name.isNotBlank() && phone.isNotBlank()) submitted = true },
+                onClick  = {
+                    sending   = true
+                    sendError = false
+                    scope.launch {
+                        val sent = sendCallbackRequest(name.trim(), phone.trim(), concern.trim())
+                        sending = false
+                        if (sent) submitted = true else sendError = true
+                    }
+                },
                 modifier = Modifier.fillMaxWidth().height(52.dp),
-                enabled  = name.isNotBlank() && phone.isNotBlank(),
+                enabled  = canSubmit,
                 shape    = RoundedCornerShape(12.dp)
             ) {
-                Icon(Icons.Default.Send, null, Modifier.size(18.dp))
-                Spacer(Modifier.width(8.dp))
-                Text("Request Callback", fontWeight = FontWeight.Bold)
+                if (sending) {
+                    CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp, color = LocalContentColor.current)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Sending…", fontWeight = FontWeight.Bold)
+                } else {
+                    Icon(Icons.Default.Send, null, Modifier.size(18.dp))
+                    Spacer(Modifier.width(8.dp))
+                    Text("Request Callback", fontWeight = FontWeight.Bold)
+                }
             }
         }
     }
