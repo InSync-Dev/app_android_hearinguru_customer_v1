@@ -61,12 +61,8 @@ fun TinnitusScreen() {
       if (isPlaying) stop() else startOrRestart(selectedSound, volume)
    }
 
-   fun pickSound(index: Int) {
-      val stopFirst = AudioService.stopTinnitusIntent(context)
-      context.startService(stopFirst)
-      val startWithNew = AudioService.startTinnitusIntent(context, index, volume)
-      ContextCompat.startForegroundService(context, startWithNew)
-   }
+   // The service swaps the sound itself — sending a stop first races with stopSelf() and crashes
+   fun pickSound(index: Int) = startOrRestart(index, volume)
 
 
    // Restart when volume changes while already playing

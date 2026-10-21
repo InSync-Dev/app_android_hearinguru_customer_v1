@@ -29,8 +29,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.PI
+import kotlin.math.cos
 import kotlin.math.log10
-import kotlin.math.sin
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -146,10 +146,14 @@ class AudioService : Service() {
          )
          track.play()
 
+         val generator = TinnitusGenerator(soundIndex, volume, sampleRate)
+         val buf = ShortArray(bufSize * 2) // interleaved stereo frames
          while (isActive) {
-            // Generate one buffer of the selected noise type
-            val buf = ShortArray(bufSize) { sampleIndex ->
-               generateTinnitusSample(sampleIndex, soundIndex, volume, sampleRate)
+            // Generate one buffer of the selected noise type, same sample in both ears
+            for (frame in 0 until bufSize) {
+               val sample = generator.next()
+               buf[frame * 2]     = sample
+               buf[frame * 2 + 1] = sample
             }
             track.write(buf, 0, buf.size)
          }
@@ -241,29 +245,57 @@ class AudioService : Service() {
    }
 
 
-   private fun generateTinnitusSample(
-      sampleIndex: Int,
-      soundIndex: Int,
-      volume: Float,
-      sampleRate: Int
-   ): Short = when (soundIndex) {
-      // White noise — equal energy across all frequencies
-      0 -> (Random.nextInt(-32768, 32767) * volume).toInt().toShort()
+   /** Stateful noise source — keeps filter state and time across buffers so sounds are continuous. */
+   private class TinnitusGenerator(
+      private val soundIndex: Int,
+      private val volume: Float,
+      private val sampleRate: Int
+   ) {
+      private var sampleCount = 0L
 
-      // Pink noise — simple 1-pole low-pass approximation for warmer feel
-      1 -> ((Random.nextInt(-32768, 32767) * volume).toInt() * 0.7f).toInt().toShort()
+      // Pink noise filter state (Paul Kellet's economy filter)
+      private var p0 = 0.0; private var p1 = 0.0; private var p2 = 0.0
 
-      // Ocean waves — slow sine wave + broadband noise
-      2 -> {
-         val waveTimeSec = sampleIndex.toDouble() / sampleRate
-         val waveComponent  = (sin(2 * PI * 0.3 * waveTimeSec) * 16000 * volume).toInt()
-         val noiseComponent = (Random.nextInt(-8000, 8000) * volume).toInt()
-         (waveComponent + noiseComponent).coerceIn(-32768, 32767).toShort()
+      // Low-pass state for ocean / rain
+      private var lowPass = 0.0
+      private var dropLevel = 0.0
+
+      private fun white() = Random.nextDouble(-1.0, 1.0)
+
+      fun next(): Short {
+         val value = when (soundIndex) {
+            // White noise — equal energy across all frequencies
+            0 -> white() * 0.5
+
+            // Pink noise — energy falls with frequency for a warmer, softer feel
+            1 -> {
+               val w = white()
+               p0 = 0.99765 * p0 + w * 0.0990460
+               p1 = 0.96300 * p1 + w * 0.2965164
+               p2 = 0.57000 * p2 + w * 1.0526913
+               (p0 + p1 + p2 + w * 0.1848) * 0.2
+            }
+
+            // Ocean waves — low-passed noise swelling in and out every ~8 seconds
+            2 -> {
+               val timeSec = sampleCount.toDouble() / sampleRate
+               val swell = 0.15 + 0.85 * (0.5 - 0.5 * cos(2 * PI * timeSec / 8.0))
+               lowPass += 0.04 * (white() - lowPass)
+               lowPass * swell * 4.0
+            }
+
+            // Rainfall — soft hiss plus random droplets
+            else -> {
+               lowPass += 0.35 * (white() - lowPass)
+               if (Random.nextDouble() < 0.0008) dropLevel = Random.nextDouble(0.3, 0.8)
+               dropLevel *= 0.995
+               lowPass * 0.35 + white() * dropLevel * 0.4
+            }
+         }
+         sampleCount++
+         return (value * volume * Short.MAX_VALUE).toInt()
+            .coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
       }
-
-      // Rainfall — half-amplitude white noise for soft, steady texture
-      else -> (Random.nextInt(-32768, 32767) * volume * 0.5f).toInt()
-         .coerceIn(-32768, 32767).toShort()
    }
 
 
@@ -313,10 +345,10 @@ class AudioService : Service() {
          .setSilent(true)
          .build()
 
-      // Declare both media-playback and microphone foreground types for Android 14+
+      // Microphone type only while the amplifier runs — Android 14+ throws if mic permission isn't granted
       val foregroundServiceType =
-         ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK or
-         ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+         if (_ampOn.value) ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK or ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+         else ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
 
       ServiceCompat.startForeground(this, NOTIF_ID, notification, foregroundServiceType)
    }
