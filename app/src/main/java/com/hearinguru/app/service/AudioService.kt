@@ -7,10 +7,10 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioRecord
 import android.media.AudioTrack
+import android.media.AudioFormat
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
@@ -30,11 +30,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.math.PI
-import kotlin.math.cos
 import kotlin.math.log10
 import kotlin.math.sqrt
-import kotlin.random.Random
 
 
 class AudioService : Service() {
@@ -135,57 +132,30 @@ class AudioService : Service() {
 
    private fun handleStartTinnitus(soundIndex: Int, volume: Float) {
       tinnitusJob?.cancel()
-
-      // Release any previous ocean MediaPlayer before starting fresh
-      releaseOceanPlayer()
+      releaseTinnitusPlayer()
 
       _tinnitusPlaying.value = true
       _tinnitusSound.value   = soundIndex
       persistState(tinnitusOn = true, tinnitusSound = soundIndex)
       pushForegroundNotification()
 
-      // Ocean waves (index 2) — play the bundled file via MediaPlayer, looping
-      val isOceanSound = soundIndex == 2
-      if (isOceanSound) {
-         val player = MediaPlayer.create(this, R.raw.ocean_waves)
-         player.isLooping = true
-         player.setVolume(volume, volume)
-         player.start()
-         oceanMediaPlayer = player
-         return
+      // Map sound index to bundled raw resource
+      val rawResId = when (soundIndex) {
+         0    -> R.raw.white_noise
+         1    -> R.raw.pink_noise
+         2    -> R.raw.ocean_waves
+         else -> R.raw.rain
       }
 
-      // All other sounds — generate PCM samples in real time with AudioTrack
-      tinnitusJob = serviceScope.launch {
-         val sampleRate = 44100
-         val bufSize    = sampleRate / 10
-
-         val track = AudioTrack(
-            AudioManager.STREAM_MUSIC, sampleRate,
-            AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT,
-            bufSize * 4, AudioTrack.MODE_STREAM
-         )
-         track.play()
-
-         val generator = TinnitusGenerator(soundIndex, volume, sampleRate)
-         val buf = ShortArray(bufSize * 2) // interleaved stereo frames
-         while (isActive) {
-            // Generate one buffer of the selected noise type, same sample in both ears
-            for (frame in 0 until bufSize) {
-               val sample = generator.next()
-               buf[frame * 2]     = sample
-               buf[frame * 2 + 1] = sample
-            }
-            track.write(buf, 0, buf.size)
-         }
-
-         track.stop()
-         track.release()
-      }
+      val player = MediaPlayer.create(this, rawResId)
+      player.isLooping = true
+      player.setVolume(volume, volume)
+      player.start()
+      oceanMediaPlayer = player
    }
 
 
-   private fun releaseOceanPlayer() {
+   private fun releaseTinnitusPlayer() {
       oceanMediaPlayer?.stop()
       oceanMediaPlayer?.release()
       oceanMediaPlayer = null
@@ -195,7 +165,7 @@ class AudioService : Service() {
    private fun handleStopTinnitus() {
       tinnitusJob?.cancel()
       tinnitusJob = null
-      releaseOceanPlayer()
+      releaseTinnitusPlayer()
       _tinnitusPlaying.value = false
       persistState(tinnitusOn = false)
       notifyWidgets()
@@ -274,63 +244,11 @@ class AudioService : Service() {
    }
 
 
-   /** Stateful noise source — keeps filter state and time across buffers so sounds are continuous. */
-   private class TinnitusGenerator(
-      private val soundIndex: Int,
-      private val volume: Float,
-      private val sampleRate: Int
-   ) {
-      private var sampleCount = 0L
-
-      // Pink noise filter state (Paul Kellet's economy filter)
-      private var p0 = 0.0; private var p1 = 0.0; private var p2 = 0.0
-
-      // Low-pass state for ocean / rain
-      private var lowPass = 0.0
-      private var dropLevel = 0.0
-
-      private fun white() = Random.nextDouble(-1.0, 1.0)
-
-      fun next(): Short {
-         val value = when (soundIndex) {
-            // White noise — equal energy across all frequencies
-            0 -> white() * 0.5
-
-            // Pink noise — energy falls with frequency for a warmer, softer feel
-            1 -> {
-               val w = white()
-               p0 = 0.99765 * p0 + w * 0.0990460
-               p1 = 0.96300 * p1 + w * 0.2965164
-               p2 = 0.57000 * p2 + w * 1.0526913
-               (p0 + p1 + p2 + w * 0.1848) * 0.2
-            }
-
-            // Ocean waves — low-passed noise swelling in and out every ~8 seconds
-            2 -> {
-               val timeSec = sampleCount.toDouble() / sampleRate
-               val swell = 0.15 + 0.85 * (0.5 - 0.5 * cos(2 * PI * timeSec / 8.0))
-               lowPass += 0.04 * (white() - lowPass)
-               lowPass * swell * 4.0
-            }
-
-            // Rainfall — soft hiss plus random droplets
-            else -> {
-               lowPass += 0.35 * (white() - lowPass)
-               if (Random.nextDouble() < 0.0008) dropLevel = Random.nextDouble(0.3, 0.8)
-               dropLevel *= 0.995
-               lowPass * 0.35 + white() * dropLevel * 0.4
-            }
-         }
-         sampleCount++
-         return (value * volume * Short.MAX_VALUE).toInt()
-            .coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
-      }
-   }
 
 
    override fun onDestroy() {
       serviceScope.cancel()
-      releaseOceanPlayer()
+      releaseTinnitusPlayer()
       _tinnitusPlaying.value = false
       _ampOn.value           = false
       _ampDbLevel.value      = 0
