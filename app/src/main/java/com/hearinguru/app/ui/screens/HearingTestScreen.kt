@@ -253,12 +253,17 @@ fun TestActiveScreen(onResult: () -> Unit) {
 private fun playTone(freqHz: Double, durationMs: Int, channel: Int) {
     val sampleRate = 44100
     val numSamples = (sampleRate * durationMs / 1000.0).toInt()
-    val buffer = ShortArray(numSamples) { i ->
-        (sin(2 * PI * freqHz * i / sampleRate) * Short.MAX_VALUE * 0.5).toInt().toShort()
+    val fadeSamples = sampleRate / 50 // 20 ms fade in/out to avoid clicks
+    // Interleaved stereo (L, R, L, R…) — tone goes only to the tested ear, the other stays silent
+    val buffer = ShortArray(numSamples * 2)
+    for (i in 0 until numSamples) {
+        val envelope = minOf(1.0, i.toDouble() / fadeSamples, (numSamples - i).toDouble() / fadeSamples)
+        val sample = (sin(2 * PI * freqHz * i / sampleRate) * Short.MAX_VALUE * 0.5 * envelope).toInt().toShort()
+        buffer[i * 2 + channel] = sample
     }
     val audioTrack = AudioTrack(
         AudioManager.STREAM_MUSIC, sampleRate,
-        if (channel == 0) AudioFormat.CHANNEL_OUT_MONO else AudioFormat.CHANNEL_OUT_STEREO,
+        AudioFormat.CHANNEL_OUT_STEREO,
         AudioFormat.ENCODING_PCM_16BIT, buffer.size * 2, AudioTrack.MODE_STATIC
     )
     audioTrack.write(buffer, 0, buffer.size)

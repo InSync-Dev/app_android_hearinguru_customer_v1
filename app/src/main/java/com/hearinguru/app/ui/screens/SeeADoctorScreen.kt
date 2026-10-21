@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.sp
 import com.hearinguru.app.R
 
 
-private const val HEARINGURU_WHATSAPP = "917010000000"
-private const val HEARINGURU_PHONE    = "+917010000000"
+private const val HEARINGURU_WHATSAPP = "918886111694"
+private const val HEARINGURU_PHONE    = "+918886111694"
 
 
 @Composable
