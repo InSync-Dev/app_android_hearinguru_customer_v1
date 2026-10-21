@@ -1,9 +1,0 @@
-com.hearinguru.app
-drawable doctor
-drawable logo
-string amplifier_widget_description
-string app_name
-string tinnitus_widget_description
-style Theme_HearinGuru
-xml amplifier_widget_info
-xml tinnitus_widget_info
