@@ -7,6 +7,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioManager
 import android.media.AudioRecord
@@ -128,37 +129,69 @@ class AudioService : Service() {
    }
 
 
+   // Read by the audio thread each sample, so volume changes apply without restarting playback
+   @Volatile private var tinnitusVolume = 0.65f
+
+
    private fun handleStartTinnitus(soundIndex: Int, volume: Float) {
+      tinnitusVolume = volume
+      pushForegroundNotification()
+
+      // Same sound already playing — just the volume changed, keep the stream running (no clicks)
+      val isSameSoundPlaying = tinnitusJob?.isActive == true && _tinnitusSound.value == soundIndex
+      if (isSameSoundPlaying) return
+
       tinnitusJob?.cancel()
       _tinnitusPlaying.value = true
       _tinnitusSound.value   = soundIndex
       persistState(tinnitusOn = true, tinnitusSound = soundIndex)
-      pushForegroundNotification()
 
       tinnitusJob = serviceScope.launch {
-         val sampleRate = 44100
-         val bufSize    = sampleRate / 10
-
-         val track = AudioTrack(
-            AudioManager.STREAM_MUSIC, sampleRate,
-            AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT,
-            bufSize * 4, AudioTrack.MODE_STREAM
+         val sampleRate  = 44100
+         val chunkFrames = 1024
+         val minBufBytes = AudioTrack.getMinBufferSize(
+            sampleRate, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT
          )
+
+         // Large buffer (~370 ms) so the stream never runs dry — underruns are what cause crackling
+         val track = AudioTrack.Builder()
+            .setAudioAttributes(
+               AudioAttributes.Builder()
+                  .setUsage(AudioAttributes.USAGE_MEDIA)
+                  .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                  .build()
+            )
+            .setAudioFormat(
+               AudioFormat.Builder()
+                  .setSampleRate(sampleRate)
+                  .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                  .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO)
+                  .build()
+            )
+            .setBufferSizeInBytes(maxOf(minBufBytes * 4, chunkFrames * 4 * 16))
+            .setTransferMode(AudioTrack.MODE_STREAM)
+            .build()
          track.play()
 
-         val generator = TinnitusGenerator(soundIndex, volume, sampleRate)
-         val buf = ShortArray(bufSize * 2) // interleaved stereo frames
+         val generator = TinnitusGenerator(soundIndex, sampleRate)
+         val buf = ShortArray(chunkFrames * 2) // interleaved stereo frames
+         var currentGain = 0f // starts silent and fades in, so playback never starts with a click
+
          while (isActive) {
-            // Generate one buffer of the selected noise type, same sample in both ears
-            for (frame in 0 until bufSize) {
-               val sample = generator.next()
+            val targetGain = tinnitusVolume
+            for (frame in 0 until chunkFrames) {
+               // Glide towards the slider value instead of jumping (jumps are audible as clicks)
+               currentGain += (targetGain - currentGain) * 0.0005f
+               val sample = (generator.next() * currentGain * Short.MAX_VALUE).toInt()
+                  .coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
                buf[frame * 2]     = sample
                buf[frame * 2 + 1] = sample
             }
             track.write(buf, 0, buf.size)
          }
 
-         track.stop()
+         track.pause()
+         track.flush()
          track.release()
       }
    }
@@ -245,56 +278,78 @@ class AudioService : Service() {
    }
 
 
-   /** Stateful noise source — keeps filter state and time across buffers so sounds are continuous. */
+   /**
+    * Stateful noise source returning samples in -1..1. Keeps filter state and time across
+    * buffers so sounds are continuous, and soft-limits peaks so nothing ever hard-clips.
+    */
    private class TinnitusGenerator(
       private val soundIndex: Int,
-      private val volume: Float,
       private val sampleRate: Int
    ) {
+      private val random = java.util.Random()
       private var sampleCount = 0L
 
-      // Pink noise filter state (Paul Kellet's economy filter)
-      private var p0 = 0.0; private var p1 = 0.0; private var p2 = 0.0
+      // Pink noise filter state (Paul Kellet's refined filter)
+      private var b0 = 0.0; private var b1 = 0.0; private var b2 = 0.0; private var b3 = 0.0
+      private var b4 = 0.0; private var b5 = 0.0; private var b6 = 0.0
 
-      // Low-pass state for ocean / rain
-      private var lowPass = 0.0
+      // Brown noise / smoothing state
+      private var brown = 0.0
+      private var smooth = 0.0
+      private var rainBand = 0.0
       private var dropLevel = 0.0
 
-      private fun white() = Random.nextDouble(-1.0, 1.0)
+      // Gaussian noise sounds smoother than uniform noise (no harsh, flat-topped peaks)
+      private fun white() = random.nextGaussian() * 0.33
 
-      fun next(): Short {
+      private fun pink(): Double {
+         val w = white()
+         b0 = 0.99886 * b0 + w * 0.0555179
+         b1 = 0.99332 * b1 + w * 0.0750759
+         b2 = 0.96900 * b2 + w * 0.1538520
+         b3 = 0.86650 * b3 + w * 0.3104856
+         b4 = 0.55000 * b4 + w * 0.5329522
+         b5 = -0.7616 * b5 - w * 0.0168980
+         val out = b0 + b1 + b2 + b3 + b4 + b5 + b6 + w * 0.5362
+         b6 = w * 0.115926
+         return out * 0.11
+      }
+
+      private fun brownNoise(): Double {
+         brown = (brown + white() * 0.06) * 0.996 // leaky integrator keeps it centred
+         return brown * 3.0
+      }
+
+      fun next(): Double {
          val value = when (soundIndex) {
-            // White noise — equal energy across all frequencies
-            0 -> white() * 0.5
-
-            // Pink noise — energy falls with frequency for a warmer, softer feel
-            1 -> {
-               val w = white()
-               p0 = 0.99765 * p0 + w * 0.0990460
-               p1 = 0.96300 * p1 + w * 0.2965164
-               p2 = 0.57000 * p2 + w * 1.0526913
-               (p0 + p1 + p2 + w * 0.1848) * 0.2
+            // White noise — softened by a gentle low-pass so it's a hiss, not a harsh static
+            0 -> {
+               smooth += 0.55 * (white() - smooth)
+               smooth * 0.9
             }
 
-            // Ocean waves — low-passed noise swelling in and out every ~8 seconds
+            // Pink noise — energy falls with frequency for a warm, natural sound
+            1 -> pink() * 1.1
+
+            // Ocean waves — deep brown noise swelling in and out every ~9 seconds
             2 -> {
                val timeSec = sampleCount.toDouble() / sampleRate
-               val swell = 0.15 + 0.85 * (0.5 - 0.5 * cos(2 * PI * timeSec / 8.0))
-               lowPass += 0.04 * (white() - lowPass)
-               lowPass * swell * 4.0
+               val wave    = 0.5 - 0.5 * cos(2 * PI * timeSec / 9.0)
+               val swell   = 0.2 + 0.8 * wave * wave
+               (brownNoise() * 0.8 + pink() * 0.35 * wave) * swell
             }
 
-            // Rainfall — soft hiss plus random droplets
+            // Rainfall — steady band of pink hiss with soft random droplets
             else -> {
-               lowPass += 0.35 * (white() - lowPass)
-               if (Random.nextDouble() < 0.0008) dropLevel = Random.nextDouble(0.3, 0.8)
-               dropLevel *= 0.995
-               lowPass * 0.35 + white() * dropLevel * 0.4
+               val p = pink()
+               rainBand += 0.5 * (p - rainBand)
+               if (random.nextDouble() < 0.0006) dropLevel = 0.25 + random.nextDouble() * 0.35
+               dropLevel *= 0.992
+               (p - rainBand * 0.6) * 1.2 + white() * dropLevel
             }
          }
          sampleCount++
-         return (value * volume * Short.MAX_VALUE).toInt()
-            .coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
+         return kotlin.math.tanh(value * 1.2) * 0.9 // soft limiter — no crackly clipping
       }
    }
 

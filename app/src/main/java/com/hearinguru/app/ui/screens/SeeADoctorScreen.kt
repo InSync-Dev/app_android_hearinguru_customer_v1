@@ -38,7 +38,11 @@ private const val HEARINGURU_PHONE    = "+918886111694"
 private const val FORM_SUBMIT_URL = "https://formsubmit.co/ajax/kishanmalviya794@gmail.com"
 
 
-/** Posts the callback request to FormSubmit. Returns true when the server accepted it. */
+// FormSubmit rejects requests without a web origin — keep this constant, activation is tied to it
+private const val FORM_ORIGIN = "https://hearinguru.com"
+
+
+/** Posts the callback request to FormSubmit. Returns true only when the server confirms it was sent. */
 private suspend fun sendCallbackRequest(name: String, phone: String, concern: String): Boolean =
     withContext(Dispatchers.IO) {
         runCatching {
@@ -57,10 +61,15 @@ private suspend fun sendCallbackRequest(name: String, phone: String, concern: St
                 doOutput       = true
                 setRequestProperty("Content-Type", "application/json")
                 setRequestProperty("Accept", "application/json")
+                setRequestProperty("Origin", FORM_ORIGIN)
+                setRequestProperty("Referer", "$FORM_ORIGIN/app")
             }
             try {
                 connection.outputStream.use { it.write(body.toByteArray()) }
-                connection.responseCode in 200..299
+                if (connection.responseCode !in 200..299) return@runCatching false
+                // FormSubmit answers 200 even on failure — the real result is in "success"
+                val response = connection.inputStream.bufferedReader().use { it.readText() }
+                JSONObject(response).optString("success") == "true"
             } finally {
                 connection.disconnect()
             }
