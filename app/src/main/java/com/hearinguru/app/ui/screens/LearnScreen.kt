@@ -13,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -21,53 +22,48 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
-data class Article(
-    val title: String,
-    val meta: String,
-    val icon: ImageVector,
-    val iconBg: Color,
-    val iconTint: Color,
-)
-
-
 @Composable
-fun LearnScreen(onArticleClick: (Int) -> Unit = {}) {
+fun LearnScreen(
+    onArticleClick: (Int) -> Unit = {},
+    onPathClick: (Int) -> Unit    = {},
+) {
     var query by remember { mutableStateOf("") }
-    var selectedCat by remember { mutableStateOf("All topics") }
+    var selectedCategory by remember { mutableStateOf("All") }
 
-    val categories = listOf("All topics", "Hearing Loss", "Prevention", "For Families", "FAQ")
+    val allCategories = listOf("All") + knowledgeArticles.map { it.category }.distinct().sorted()
 
-    val articles = listOf(
-        Article("How to read your hearing test results — explained simply", "8 min · Hearing Loss", Icons.Default.Hearing, MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer),
-        Article("Why hearing gets worse after 40 — and what to do", "5 min · Hearing Loss", Icons.Default.Elderly, MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer),
-        Article("How to protect your hearing from everyday noise", "4 min · Prevention", Icons.Default.VolumeOff, MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer),
-        Article("How to help a family member who won't admit hearing loss", "7 min · For Families", Icons.Default.FamilyRestroom, MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.onTertiaryContainer),
-        Article("Signs you may have hearing loss — a simple checklist", "3 min · Hearing Loss", Icons.Default.Psychology, MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer),
-        Article("Common questions about hearing loss — answered", "5 min · FAQ", Icons.Default.Quiz, MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer),
-        Article("Tinnitus: causes, symptoms and relief options", "6 min · Hearing Loss", Icons.Default.HearingDisabled, MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer),
-        Article("When should you see a doctor about your hearing?", "4 min · FAQ", Icons.Default.MedicalServices, MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.onTertiaryContainer),
-    )
-
-    val categoryKeyword = if (selectedCat == "All topics") null else selectedCat.lowercase()
-
-    val visibleArticles = articles.filterIndexed { index, article ->
-        val matchesSearch = query.isBlank() || article.title.contains(query, ignoreCase = true)
-        val matchesCat = categoryKeyword == null || article.meta.contains(categoryKeyword, ignoreCase = true)
-        matchesSearch && matchesCat
+    val visibleArticles = knowledgeArticles.filter { article ->
+        val matchesSearch   = query.isBlank() || article.title.contains(query, ignoreCase = true)
+        val matchesCategory = selectedCategory == "All" || article.category == selectedCategory
+        matchesSearch && matchesCategory
     }
 
-    val primaryGradient = Brush.linearGradient(
-        listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary)
-    )
+    val isShowingLibrary = query.isNotBlank() || selectedCategory != "All"
 
 
-    Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
 
-        // Search bar
+        // ── Intent entry-point selector ───────────────────────────────────────
+
+        if (!isShowingLibrary) {
+            IntentSelectorSection(
+                onPathClick = onPathClick
+            )
+
+            Spacer(Modifier.height(4.dp))
+        }
+
+
+        // ── Search bar ────────────────────────────────────────────────────────
+
         OutlinedTextField(
             value            = query,
             onValueChange    = { query = it },
-            placeholder      = { Text("Search articles...") },
+            placeholder      = { Text("Search all articles...") },
             leadingIcon      = { Icon(Icons.Default.Search, null, modifier = Modifier.size(20.dp)) },
             trailingIcon     = if (query.isNotEmpty()) {{
                 IconButton(onClick = { query = "" }) {
@@ -76,131 +72,334 @@ fun LearnScreen(onArticleClick: (Int) -> Unit = {}) {
             }} else null,
             modifier         = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp),
             singleLine       = true,
             shape            = RoundedCornerShape(50),
             colors           = OutlinedTextFieldDefaults.colors(
-                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-                focusedBorderColor   = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor    = MaterialTheme.colorScheme.outlineVariant,
+                focusedBorderColor      = MaterialTheme.colorScheme.primary,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
                 focusedContainerColor   = MaterialTheme.colorScheme.surfaceContainerLow,
             )
         )
 
-        // Category chips — horizontally scrollable
+        // ── Category chips ────────────────────────────────────────────────────
+
         Row(
             modifier              = Modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
-                .padding(start = 16.dp, end = 16.dp, bottom = 12.dp),
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            categories.forEach { cat ->
+            allCategories.forEach { cat ->
                 FilterChip(
-                    selected = selectedCat == cat,
-                    onClick  = { selectedCat = cat },
+                    selected = selectedCategory == cat,
+                    onClick  = { selectedCategory = cat },
                     label    = { Text(cat, fontWeight = FontWeight.SemiBold) }
                 )
             }
         }
 
-        // Featured card — gradient header + text body
-        Surface(
-            shape    = RoundedCornerShape(16.dp),
-            color    = MaterialTheme.colorScheme.surfaceContainerLow,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .clickable { onArticleClick(0) }
-        ) {
-            Column {
-                // Gradient header with Guide tag + icon
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(130.dp)
-                        .background(primaryGradient, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                ) {
-                    Icon(
-                        Icons.Default.Hearing,
-                        contentDescription = null,
-                        modifier = Modifier.size(54.dp).align(Alignment.Center),
-                        tint     = Color.White.copy(alpha = 0.22f)
-                    )
-                    Surface(
-                        shape    = RoundedCornerShape(50),
-                        color    = Color.White.copy(alpha = 0.92f),
-                        modifier = Modifier.padding(12.dp)
-                    ) {
-                        Text(
-                            "Guide",
-                            modifier      = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                            color         = MaterialTheme.colorScheme.primary,
-                            fontSize      = 11.sp,
-                            fontWeight    = FontWeight.ExtraBold,
-                            letterSpacing = 0.4.sp
-                        )
-                    }
-                }
 
-                // Text body
-                Column(Modifier.padding(16.dp)) {
-                    Text(
-                        "How to read your hearing test results — explained simply",
-                        fontWeight = FontWeight.Bold,
-                        fontSize   = 17.sp,
-                        color      = MaterialTheme.colorScheme.onSurface,
-                        lineHeight = 22.sp
-                    )
-                    Spacer(Modifier.height(6.dp))
-                    Text(
-                        "8 min read · Hearing Loss",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+        // ── Learning paths section (hidden when searching) ────────────────────
+
+        if (!isShowingLibrary) {
+            Spacer(Modifier.height(8.dp))
+
+            Text(
+                "LEARNING PATHS",
+                modifier      = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                style         = MaterialTheme.typography.labelMedium,
+                color         = MaterialTheme.colorScheme.onSurfaceVariant,
+                letterSpacing = 0.8.sp
+            )
+
+            Spacer(Modifier.height(4.dp))
+
+            Row(
+                modifier              = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                learningPaths.forEachIndexed { pathIndex, path ->
+                    PathCard(
+                        path        = path,
+                        onClick     = { onPathClick(pathIndex) }
                     )
                 }
             }
+
+            Spacer(Modifier.height(20.dp))
         }
 
-        Spacer(Modifier.height(8.dp))
+
+        // ── Article library ───────────────────────────────────────────────────
+
+        val libraryLabel = if (isShowingLibrary) "RESULTS (${visibleArticles.size})" else "ALL ARTICLES"
 
         Text(
-            "ALL ARTICLES",
-            modifier      = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            libraryLabel,
+            modifier      = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
             style         = MaterialTheme.typography.labelMedium,
             color         = MaterialTheme.colorScheme.onSurfaceVariant,
             letterSpacing = 0.8.sp
         )
 
-        // Article list (skip first since it's the featured card)
-        Column(Modifier.padding(horizontal = 16.dp)) {
-            visibleArticles.drop(1).forEachIndexed { i, article ->
-                val articleIndex = articles.indexOf(article)
-                Row(
-                    modifier              = Modifier.fillMaxWidth().clickable { onArticleClick(articleIndex) }.padding(vertical = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(14.dp),
-                    verticalAlignment     = Alignment.CenterVertically
-                ) {
-                    Surface(
-                        shape    = RoundedCornerShape(12.dp),
-                        color    = article.iconBg,
-                        modifier = Modifier.size(60.dp)
+        if (visibleArticles.isEmpty()) {
+            Box(
+                modifier          = Modifier
+                    .fillMaxWidth()
+                    .padding(40.dp),
+                contentAlignment  = Alignment.Center
+            ) {
+                Text(
+                    "No articles match \"$query\"",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        } else {
+            Column(Modifier.padding(horizontal = 16.dp)) {
+                visibleArticles.forEachIndexed { i, article ->
+                    val articleIndex = indexOfArticle(article.id)
+
+                    Row(
+                        modifier              = Modifier
+                            .fillMaxWidth()
+                            .clickable { onArticleClick(articleIndex) }
+                            .padding(vertical = 14.dp),
+                        horizontalArrangement = Arrangement.spacedBy(14.dp),
+                        verticalAlignment     = Alignment.CenterVertically
                     ) {
-                        Box(contentAlignment = Alignment.Center) {
-                            Icon(article.icon, null, tint = article.iconTint, modifier = Modifier.size(26.dp))
+                        val iconBg   = categoryContainerColor(article.category)
+                        val iconFg   = categoryOnContainerColor(article.category)
+                        val icon     = categoryIcon(article.category)
+
+                        Surface(
+                            shape    = RoundedCornerShape(12.dp),
+                            color    = iconBg,
+                            modifier = Modifier.size(56.dp)
+                        ) {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(icon, null, tint = iconFg, modifier = Modifier.size(24.dp))
+                            }
                         }
+
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                article.title,
+                                fontWeight = FontWeight.SemiBold,
+                                fontSize   = 14.sp,
+                                color      = MaterialTheme.colorScheme.onSurface,
+                                lineHeight = 19.sp
+                            )
+                            Spacer(Modifier.height(4.dp))
+                            Text(
+                                article.meta,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        Icon(Icons.Default.ChevronRight, null, tint = MaterialTheme.colorScheme.outline)
                     }
-                    Column(Modifier.weight(1f)) {
-                        Text(article.title, fontWeight = FontWeight.Bold, fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurface, lineHeight = 20.sp)
-                        Spacer(Modifier.height(5.dp))
-                        Text(article.meta, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+                    if (i < visibleArticles.size - 1) {
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
                     }
-                    Icon(Icons.Default.ChevronRight, null, tint = MaterialTheme.colorScheme.outline)
                 }
-                if (i < visibleArticles.size - 2) HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             }
         }
 
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(32.dp))
     }
 }
+
+
+// ─── Intent selector section ──────────────────────────────────────────────────
+
+@Composable
+private fun IntentSelectorSection(onPathClick: (Int) -> Unit) {
+    val primaryGradient = Brush.linearGradient(
+        listOf(
+            MaterialTheme.colorScheme.primary,
+            MaterialTheme.colorScheme.secondary
+        )
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(primaryGradient)
+            .padding(horizontal = 20.dp, vertical = 20.dp)
+    ) {
+        Column {
+            Text(
+                "Where do you want to start?",
+                style      = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color      = MaterialTheme.colorScheme.onPrimary
+            )
+            Text(
+                "Pick your starting point — you can always explore freely.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.80f)
+            )
+
+            Spacer(Modifier.height(14.dp))
+
+            learningIntents.forEach { intent ->
+                val targetPathIndex = indexOfPath(intent.targetPathId)
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(10.dp))
+                        .clickable { onPathClick(targetPathIndex) }
+                        .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.12f))
+                        .padding(horizontal = 14.dp, vertical = 12.dp),
+                    verticalAlignment     = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Icon(
+                        intent.icon,
+                        contentDescription = null,
+                        tint     = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Text(
+                        intent.label,
+                        style  = MaterialTheme.typography.bodyMedium,
+                        color  = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Icon(
+                        Icons.Default.ChevronRight,
+                        contentDescription = null,
+                        tint     = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+
+                Spacer(Modifier.height(6.dp))
+            }
+        }
+    }
+}
+
+
+// ─── Path card (horizontal scroll) ───────────────────────────────────────────
+
+@Composable
+private fun PathCard(path: LearningPath, onClick: () -> Unit) {
+    val containerColor  = pathContainerColor(path.colorIndex)
+    val onContainerColor = pathOnContainerColor(path.colorIndex)
+
+    Surface(
+        shape    = RoundedCornerShape(16.dp),
+        color    = MaterialTheme.colorScheme.surfaceContainerLow,
+        modifier = Modifier
+            .width(180.dp)
+            .clickable(onClick = onClick)
+    ) {
+        Column {
+            // Coloured icon band
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(72.dp)
+                    .background(containerColor, RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    path.icon,
+                    contentDescription = null,
+                    tint     = onContainerColor,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
+
+            // Text info
+            Column(Modifier.padding(12.dp)) {
+                Text(
+                    path.title,
+                    style      = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    color      = MaterialTheme.colorScheme.onSurface,
+                    lineHeight = 18.sp,
+                    maxLines   = 2,
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "${path.articleIds.size} articles",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+
+// ─── Category → UI helpers ────────────────────────────────────────────────────
+
+@Composable
+private fun categoryContainerColor(category: String): androidx.compose.ui.graphics.Color =
+    when (category) {
+        "Hearing Basics", "Hearing Loss" -> MaterialTheme.colorScheme.primaryContainer
+        "Testing"                        -> MaterialTheme.colorScheme.secondaryContainer
+        "Treatment", "Hearing Aids"      -> MaterialTheme.colorScheme.tertiaryContainer
+        "Prevention"                     -> MaterialTheme.colorScheme.secondaryContainer
+        "For Families"                   -> MaterialTheme.colorScheme.tertiaryContainer
+        "FAQ"                            -> MaterialTheme.colorScheme.errorContainer
+        else                             -> MaterialTheme.colorScheme.surfaceContainerHigh
+    }
+
+@Composable
+private fun categoryOnContainerColor(category: String): androidx.compose.ui.graphics.Color =
+    when (category) {
+        "Hearing Basics", "Hearing Loss" -> MaterialTheme.colorScheme.onPrimaryContainer
+        "Testing"                        -> MaterialTheme.colorScheme.onSecondaryContainer
+        "Treatment", "Hearing Aids"      -> MaterialTheme.colorScheme.onTertiaryContainer
+        "Prevention"                     -> MaterialTheme.colorScheme.onSecondaryContainer
+        "For Families"                   -> MaterialTheme.colorScheme.onTertiaryContainer
+        "FAQ"                            -> MaterialTheme.colorScheme.onErrorContainer
+        else                             -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+private fun categoryIcon(category: String): ImageVector = when (category) {
+    "Hearing Basics"  -> Icons.Default.School
+    "Hearing Loss"    -> Icons.Default.Hearing
+    "Testing"         -> Icons.Default.Psychology
+    "Treatment"       -> Icons.Default.MedicalServices
+    "Hearing Aids"    -> Icons.Default.HearingDisabled
+    "Prevention"      -> Icons.Default.VolumeOff
+    "For Families"    -> Icons.Default.FamilyRestroom
+    "FAQ"             -> Icons.Default.Quiz
+    else              -> Icons.Default.Info
+}
+
+@Composable
+private fun pathContainerColor(colorIndex: Int): androidx.compose.ui.graphics.Color =
+    when (colorIndex % 6) {
+        0    -> MaterialTheme.colorScheme.primaryContainer
+        1    -> MaterialTheme.colorScheme.secondaryContainer
+        2    -> MaterialTheme.colorScheme.tertiaryContainer
+        3    -> MaterialTheme.colorScheme.errorContainer
+        4    -> MaterialTheme.colorScheme.primaryContainer
+        else -> MaterialTheme.colorScheme.secondaryContainer
+    }
+
+@Composable
+private fun pathOnContainerColor(colorIndex: Int): androidx.compose.ui.graphics.Color =
+    when (colorIndex % 6) {
+        0    -> MaterialTheme.colorScheme.onPrimaryContainer
+        1    -> MaterialTheme.colorScheme.onSecondaryContainer
+        2    -> MaterialTheme.colorScheme.onTertiaryContainer
+        3    -> MaterialTheme.colorScheme.onErrorContainer
+        4    -> MaterialTheme.colorScheme.onPrimaryContainer
+        else -> MaterialTheme.colorScheme.onSecondaryContainer
+    }

@@ -31,7 +31,7 @@ fun AppNavigation(isDark: Boolean, onToggleTheme: () -> Unit) {
     val topLevelRoutes = setOf(
         Screen.Tools.route,
         Screen.Learn.route,
-        Screen.HearingAids.route,
+        // Screen.HearingAids.route,
         Screen.SeeADoctor.route
     )
     val isTopLevel = currentRoute in topLevelRoutes
@@ -93,7 +93,7 @@ fun AppNavigation(isDark: Boolean, onToggleTheme: () -> Unit) {
                                 when (item.screen) {
                                     Screen.Tools       -> Icon(Icons.Default.Build, contentDescription = null)
                                     Screen.Learn       -> Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = null)
-                                    Screen.HearingAids -> Icon(Icons.Default.HearingDisabled, contentDescription = null)
+                                    // Screen.HearingAids -> Icon(Icons.Default.HearingDisabled, contentDescription = null)
                                     Screen.SeeADoctor  -> Icon(Icons.Default.MedicalServices, contentDescription = null)
                                     else -> Icon(Icons.Default.Circle, contentDescription = null)
                                 }
@@ -141,16 +141,9 @@ fun AppNavigation(isDark: Boolean, onToggleTheme: () -> Unit) {
                 )
             }
             composable(Screen.HearingTest.route) {
-                HearingTestScreen(onStartTest = { navController.navigate(Screen.TestActive.route) })
-            }
-            composable(Screen.TestActive.route) {
-                TestActiveScreen(onResult = { navController.navigate(Screen.TestResult.route) })
-            }
-            composable(Screen.TestResult.route) {
-                TestResultScreen(
-                    onBookConsult = { navController.navigate(Screen.SeeADoctor.route) },
-                    onBrowseHAs   = { navController.navigate(Screen.HearingAids.route) },
-                    onRetake      = { navController.navigate(Screen.HearingTest.route) }
+                HearingTestScreen(
+                    onNavigateToDoctor      = { navController.navigate(Screen.SeeADoctor.route) },
+                    onNavigateToHearingAids = { /* navController.navigate(Screen.HearingAids.route) */ }
                 )
             }
             composable(Screen.SoundAmplifier.route) { SoundAmplifierScreen() }
@@ -158,12 +151,13 @@ fun AppNavigation(isDark: Boolean, onToggleTheme: () -> Unit) {
             composable(Screen.Tinnitus.route)       { TinnitusScreen() }
             composable(Screen.Learn.route) {
                 LearnScreen(
-                    onArticleClick = { index -> navController.navigate(Screen.ArticleDetail.route(index)) }
+                    onArticleClick = { index -> navController.navigate(Screen.ArticleDetail.route(index)) },
+                    onPathClick    = { pathIndex -> navController.navigate(Screen.LearningPath.route(pathIndex)) }
                 )
             }
-            composable(Screen.HearingAids.route) {
-                HearingAidsScreen(onSeeDoctor = { navController.navigate(Screen.SeeADoctor.route) })
-            }
+            // composable(Screen.HearingAids.route) {
+            //     HearingAidsScreen(onSeeDoctor = { navController.navigate(Screen.SeeADoctor.route) })
+            // }
             composable(Screen.SeeADoctor.route) { SeeADoctorScreen() }
             composable(Screen.Notifications.route) { NotificationsScreen() }
             composable(Screen.Profile.route)       { ProfileScreen() }
@@ -172,7 +166,20 @@ fun AppNavigation(isDark: Boolean, onToggleTheme: () -> Unit) {
                 arguments = listOf(navArgument("index") { type = NavType.IntType })
             ) { backStackEntry ->
                 val index = backStackEntry.arguments?.getInt("index") ?: 0
-                ArticleDetailScreen(articleIndex = index)
+                ArticleDetailScreen(
+                    articleIndex   = index,
+                    onArticleClick = { navController.navigate(Screen.ArticleDetail.route(it)) }
+                )
+            }
+            composable(
+                route     = Screen.LearningPath.route,
+                arguments = listOf(navArgument("pathIndex") { type = NavType.IntType })
+            ) { backStackEntry ->
+                val pathIndex = backStackEntry.arguments?.getInt("pathIndex") ?: 0
+                LearningPathScreen(
+                    pathIndex      = pathIndex,
+                    onArticleClick = { navController.navigate(Screen.ArticleDetail.route(it)) }
+                )
             }
         }
     }
