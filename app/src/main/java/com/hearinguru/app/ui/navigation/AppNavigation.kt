@@ -31,7 +31,7 @@ fun AppNavigation(isDark: Boolean, onToggleTheme: () -> Unit) {
     val topLevelRoutes = setOf(
         Screen.Tools.route,
         Screen.Learn.route,
-        Screen.HearingAids.route,
+        // Screen.HearingAids.route,
         Screen.SeeADoctor.route
     )
     val isTopLevel = currentRoute in topLevelRoutes
@@ -93,7 +93,7 @@ fun AppNavigation(isDark: Boolean, onToggleTheme: () -> Unit) {
                                 when (item.screen) {
                                     Screen.Tools       -> Icon(Icons.Default.Build, contentDescription = null)
                                     Screen.Learn       -> Icon(Icons.AutoMirrored.Filled.MenuBook, contentDescription = null)
-                                    Screen.HearingAids -> Icon(Icons.Default.HearingDisabled, contentDescription = null)
+                                    // Screen.HearingAids -> Icon(Icons.Default.HearingDisabled, contentDescription = null)
                                     Screen.SeeADoctor  -> Icon(Icons.Default.MedicalServices, contentDescription = null)
                                     else -> Icon(Icons.Default.Circle, contentDescription = null)
                                 }
@@ -143,7 +143,7 @@ fun AppNavigation(isDark: Boolean, onToggleTheme: () -> Unit) {
             composable(Screen.HearingTest.route) {
                 HearingTestScreen(
                     onNavigateToDoctor      = { navController.navigate(Screen.SeeADoctor.route) },
-                    onNavigateToHearingAids = { navController.navigate(Screen.HearingAids.route) }
+                    onNavigateToHearingAids = { /* navController.navigate(Screen.HearingAids.route) */ }
                 )
             }
             composable(Screen.SoundAmplifier.route) { SoundAmplifierScreen() }
@@ -155,9 +155,9 @@ fun AppNavigation(isDark: Boolean, onToggleTheme: () -> Unit) {
                     onPathClick    = { pathIndex -> navController.navigate(Screen.LearningPath.route(pathIndex)) }
                 )
             }
-            composable(Screen.HearingAids.route) {
-                HearingAidsScreen(onSeeDoctor = { navController.navigate(Screen.SeeADoctor.route) })
-            }
+            // composable(Screen.HearingAids.route) {
+            //     HearingAidsScreen(onSeeDoctor = { navController.navigate(Screen.SeeADoctor.route) })
+            // }
             composable(Screen.SeeADoctor.route) { SeeADoctorScreen() }
             composable(Screen.Notifications.route) { NotificationsScreen() }
             composable(Screen.Profile.route)       { ProfileScreen() }

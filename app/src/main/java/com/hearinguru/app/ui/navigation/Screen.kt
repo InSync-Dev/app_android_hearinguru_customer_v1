@@ -24,7 +24,7 @@ sealed class Screen(val route: String) {
 val bottomNavItems = listOf(
     BottomNavItem(Screen.Tools,       "Tools",   "build"),
     BottomNavItem(Screen.Learn,       "Learn",   "menu_book"),
-    BottomNavItem(Screen.HearingAids, "Aids",    "hearing_aid"),
+    // BottomNavItem(Screen.HearingAids, "Aids",    "hearing_aid"),
     BottomNavItem(Screen.SeeADoctor,  "Doctor",  "medical_services"),
 )
 
