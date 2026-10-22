@@ -7,11 +7,11 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.AudioRecord
 import android.media.AudioTrack
 import android.media.AudioFormat
-import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
 import android.os.IBinder
@@ -96,9 +96,6 @@ class AudioService : Service() {
    private var tinnitusJob: Job? = null
    private var ampJob: Job? = null
 
-   // MediaPlayer used when ocean waves file is selected (soundIndex == 2)
-   private var oceanMediaPlayer: MediaPlayer? = null
-
    private lateinit var prefs: SharedPreferences
 
 
@@ -130,18 +127,19 @@ class AudioService : Service() {
    }
 
 
+   // Read by the audio thread every frame, so volume changes apply without restarting playback
+   @Volatile private var tinnitusVolume = 0.65f
+
+
    private fun handleStartTinnitus(soundIndex: Int, volume: Float) {
+      tinnitusVolume = volume
       pushForegroundNotification()
 
-      // Same sound already playing — just the volume changed, adjust it without restarting (no gap)
-      val currentPlayer = oceanMediaPlayer
-      if (currentPlayer != null && _tinnitusSound.value == soundIndex) {
-         currentPlayer.setVolume(volume, volume)
-         return
-      }
+      // Same sound already playing — just the volume changed, keep the stream running (no gap)
+      val isSameSoundPlaying = tinnitusJob?.isActive == true && _tinnitusSound.value == soundIndex
+      if (isSameSoundPlaying) return
 
       tinnitusJob?.cancel()
-      releaseTinnitusPlayer()
 
       _tinnitusPlaying.value = true
       _tinnitusSound.value   = soundIndex
@@ -155,25 +153,68 @@ class AudioService : Service() {
          else -> R.raw.rain
       }
 
-      val player = MediaPlayer.create(this, rawResId)
-      player.isLooping = true
-      player.setVolume(volume, volume)
-      player.start()
-      oceanMediaPlayer = player
+      tinnitusJob = serviceScope.launch {
+         val loop = runCatching { SeamlessLoopLoader.load(this@AudioService, rawResId) }.getOrNull()
+            ?: return@launch
+         playLoop(loop)
+      }
    }
 
 
-   private fun releaseTinnitusPlayer() {
-      oceanMediaPlayer?.stop()
-      oceanMediaPlayer?.release()
-      oceanMediaPlayer = null
+   /** Streams the crossfaded loop endlessly — no restart gap, smooth fade-in and volume glide. */
+   private suspend fun playLoop(loop: SeamlessLoop) = kotlinx.coroutines.coroutineScope {
+      val chunkFrames = 2048
+      val minBufBytes = AudioTrack.getMinBufferSize(
+         loop.sampleRate, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT
+      )
+      // Generous buffer (~0.75 s) so playback never runs dry — underruns are heard as crackles
+      val track = AudioTrack.Builder()
+         .setAudioAttributes(
+            AudioAttributes.Builder()
+               .setUsage(AudioAttributes.USAGE_MEDIA)
+               .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+               .build()
+         )
+         .setAudioFormat(
+            AudioFormat.Builder()
+               .setSampleRate(loop.sampleRate)
+               .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+               .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO)
+               .build()
+         )
+         .setBufferSizeInBytes(maxOf(minBufBytes * 4, chunkFrames * 4 * 16))
+         .setTransferMode(AudioTrack.MODE_STREAM)
+         .build()
+
+      val buf = ShortArray(chunkFrames * 2)
+      var position = 0          // current frame inside the loop
+      var currentGain = 0f      // starts silent and fades in, so playback never starts with a pop
+      val glide = 1f / (loop.sampleRate * 0.08f) // ~80 ms to reach a new volume
+
+      try {
+         track.play()
+         while (isActive) {
+            val targetGain = tinnitusVolume
+            for (frame in 0 until chunkFrames) {
+               currentGain += (targetGain - currentGain) * glide
+               buf[frame * 2]     = (loop.pcm[position * 2] * currentGain).toInt().toShort()
+               buf[frame * 2 + 1] = (loop.pcm[position * 2 + 1] * currentGain).toInt().toShort()
+               position++
+               if (position >= loop.frameCount) position = 0
+            }
+            track.write(buf, 0, buf.size)
+         }
+      } finally {
+         track.pause()
+         track.flush()
+         track.release()
+      }
    }
 
 
    private fun handleStopTinnitus() {
       tinnitusJob?.cancel()
       tinnitusJob = null
-      releaseTinnitusPlayer()
       _tinnitusPlaying.value = false
       persistState(tinnitusOn = false)
       notifyWidgets()
@@ -256,7 +297,6 @@ class AudioService : Service() {
 
    override fun onDestroy() {
       serviceScope.cancel()
-      releaseTinnitusPlayer()
       _tinnitusPlaying.value = false
       _ampOn.value           = false
       _ampDbLevel.value      = 0
