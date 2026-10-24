@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Launcher icon mark — same ear/swirl as hearinguru-icon.png, taken from logo.xml so it stays sharp.
+     Scaled and centred inside the 66dp adaptive-icon safe zone of the 108dp canvas. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <group
+        android:scaleX="1.27"
+        android:scaleY="1.27"
+        android:translateX="-6.2"
+        android:translateY="11.2">
+        <path
+            android:fillColor="#6B2300"
+            android:fillType="evenOdd"
+            android:pathData="M44.9015 12.4986C37.5332 14.0787 34.8426 22.8176 40.1259 28.0089C41.6827 29.5384 43.2413 30.2579 46.951 31.1594C53.9208 32.8531 56.717 35.0669 57.2301 39.2973C57.424 40.8955 59.4413 36.1578 60.0651 32.6396C61.2192 26.1308 57.6042 17.2734 52.5835 14.3085C52.306 14.1446 51.7893 13.8356 51.4354 13.6218C49.5888 12.5064 46.967 12.0557 44.9015 12.4986ZM37.2107 27.3184C33.6214 32.1382 35.3761 41.2337 40.6472 45.1315C48.3328 50.8148 58.3163 45.9193 55.2202 37.9855C54.1212 35.169 52.3656 34.1091 46.3627 32.6378C43.1156 31.8419 41.8709 31.3556 40.3932 30.305C39.4109 29.6067 37.4766 27.6062 37.4766 27.2885C37.4766 27.1548 37.3194 27.1725 37.2107 27.3184ZM37.6746 46.618C34.6348 47.8339 34.5491 52.106 37.5328 53.6956C41.6933 55.9122 47.596 54.0129 51.6674 49.1476C52.2162 48.4918 52.2289 48.4993 51.1311 48.8286C49.5251 49.3102 47.5342 49.381 45.743 49.02C43.965 48.6618 42.9717 48.2642 40.1455 46.7795C39.3788 46.3768 38.4326 46.3149 37.6746 46.618Z" />
+    </group>
+
+</vector>
